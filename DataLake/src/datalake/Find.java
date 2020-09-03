@@ -64,7 +64,7 @@ public class Find extends javax.swing.JFrame {
 
         jLabel4.setText("Średnia pręd dźwięku");
 
-        button1.setLabel("button1");
+        button1.setLabel("załadujDane");
         button1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 button1ActionPerformed(evt);
@@ -171,13 +171,15 @@ public class Find extends javax.swing.JFrame {
             pogoda = (DanaPogodowa) records.get(1);
             jTextField2.setText( String.valueOf( pogoda.predkoscDzwieku));
               
-            String pattern = "MM-dd-yyyy";
+            String pattern = "dd-MM-yyyy";
 
     DateFormat df = new SimpleDateFormat(pattern);
 
     String todayAsString = df.format(pogoda.data);
             
                  jTextField3.setText( todayAsString);
+                 
+                 records.clear();
         }
 
         catch (FileNotFoundException ex) {
@@ -194,9 +196,15 @@ public class Find extends javax.swing.JFrame {
         double sumaPomiaru=0;
         int licznik=0;
             String getDate = jTextField4.getText();
+            String fileName= "jezioroDanych//data"+getDate.substring(3)+".csv";
+         try {
+             załadujDane(fileName);
+         } catch (FileNotFoundException ex) {
+             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+         }
 	for(DanaPogodowa daneLoop : records)
         {  
-            String pattern = "MM-dd-yyyy";
+            String pattern = "dd-MM-yyyy";
 
         DateFormat df = new SimpleDateFormat(pattern);
 
@@ -211,9 +219,63 @@ public class Find extends javax.swing.JFrame {
         }
          DecimalFormat twoDForm = new DecimalFormat("#.##");
  jTextField5.setText( String.valueOf( twoDForm.format(sumaPomiaru/licznik)));
+ 
+ //po odczycie czyścimy listę 
+ 
+    records.clear();
         // TODO add your handling code here:
     }//GEN-LAST:event_button2ActionPerformed
 
+     public  void załadujDane(String plik) throws FileNotFoundException {
+             BufferedReader reader;
+        try {
+          //  ArrayList records = new ArrayList<DanaPogodowa> ();
+            reader = new BufferedReader(new FileReader(plik));
+            DateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH);
+            String[] data = null;
+            String line;
+            reader.readLine();
+            reader.readLine();
+            while ((line = reader.readLine()) != null) {
+                //  records.add(line);
+                data = line.split(";");
+
+                DanaPogodowa pogoda = new DanaPogodowa();
+                pogoda.data= format.parse(data[0]);
+              
+                if(!data[2].isEmpty())
+                pogoda.predkoscDzwieku = Double.parseDouble(data[2]);
+                records.add(pogoda);
+            }
+            reader.close();
+            //testy
+            jTextField1.setText(String.valueOf(records.size()));
+            DanaPogodowa pogoda = new DanaPogodowa();
+            pogoda = (DanaPogodowa) records.get(1);
+            jTextField2.setText( String.valueOf( pogoda.predkoscDzwieku));
+              
+            String pattern = "MM-dd-yyyy";
+
+    DateFormat df = new SimpleDateFormat(pattern);
+
+    String todayAsString = df.format(pogoda.data);
+            
+                 jTextField3.setText( todayAsString);
+                
+        }
+
+        catch (FileNotFoundException ex) {
+            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         
+         
+         
+         
+     }
     /**
      * @param args the command line arguments
      */
