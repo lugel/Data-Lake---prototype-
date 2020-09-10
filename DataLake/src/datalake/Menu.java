@@ -96,11 +96,10 @@ public class Menu extends javax.swing.JFrame {
             } catch (IOException ex) {
                 System.out.println("I/O error");
             }
+            new Add(file.getName()).setVisible(true);
         } else {
             System.out.println("File access cancelled by user.");
         }
-        new Add().setVisible(true);
-        //new FileChooser().setVisible(true);
     }//GEN-LAST:event_AddButtonMouseClicked
 
     private void FindButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_FindButtonMouseClicked

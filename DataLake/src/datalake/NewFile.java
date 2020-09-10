@@ -12,8 +12,8 @@ import java.util.Date;
  */
 public class NewFile {
     String name;
-    Date date;
     String type;
+    Date date;
     String tag1;
     String tag2;
     
