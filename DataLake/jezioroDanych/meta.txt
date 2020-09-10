@@ -1,2 +1,5 @@
 mapa Sat Jan 10 00:10:00 CET 2015 jpg cos i cso
 tabela Wed Jan 23 00:06:00 CET 2019 tab nie tak
+mapa  Wed Jan 09 00:09:00 CET 2002 png mapa z 2002  elo
+polska Fri Jan 10 00:09:00 CET 2020 txt pogoda pogoda
+polski Fri Jan 10 00:09:00 CET 2020 polski polski polski

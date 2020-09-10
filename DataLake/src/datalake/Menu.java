@@ -90,7 +90,7 @@ public class Menu extends javax.swing.JFrame {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             Path source = Paths.get(file.getAbsolutePath());
-            Path dest = Paths.get(System.getProperty("user.home") + "/Desktop/Data-Lake---prototype-/DataLake/jezioroDanych/" + file.getName());
+            Path dest = Paths.get("jezioroDanych//" + file.getName());  
             try{
                Files.move(source, dest);
             } catch (IOException ex) {
