@@ -5,6 +5,9 @@
  */
 package datalake;
 
+import java.awt.Component;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -69,6 +72,14 @@ public class Add extends javax.swing.JFrame {
             }
         });
 
+        jDateChooser1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jDateChooser1PropertyChange(evt);
+            }
+        });
+
+        jDateChooser2.setEnabled(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -121,6 +132,7 @@ public class Add extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         try {
+
             Writer output;
             output = new BufferedWriter(new FileWriter("jezioroDanych//meta.txt", true));
             newFile.name = fileName.split("\\.")[0];
@@ -129,7 +141,7 @@ public class Add extends javax.swing.JFrame {
            DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
             String dateToFileStart = dF.format(newFile.dateStart);
           
-              newFile.dateEnd = jDateChooser1.getDate();
+              newFile.dateEnd = jDateChooser2.getDate();
             String dateToFileEnd = dF.format(newFile.dateEnd);
             
             newFile.localization = jTextField5.getText();
@@ -142,6 +154,16 @@ public class Add extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jDateChooser1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jDateChooser1PropertyChange
+        // TODO add your handling code here:
+             if ("date".equals(evt.getPropertyName())) {
+                     jDateChooser2.setEnabled(true);
+                jDateChooser2.setMinSelectableDate(jDateChooser1.getDate());   
+            }
+    }//GEN-LAST:event_jDateChooser1PropertyChange
+
+//jDateChooser2.setEnabled(true);
+    
     /**
      * @param args the command line arguments
      */
@@ -151,6 +173,11 @@ public class Add extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
+       
+
+        // this.add(jDateChooser1);
+        
+        
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -179,8 +206,8 @@ public class Add extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
-    private com.toedter.calendar.JDateChooser jDateChooser2;
+    private static com.toedter.calendar.JDateChooser jDateChooser1;
+    private static com.toedter.calendar.JDateChooser jDateChooser2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;

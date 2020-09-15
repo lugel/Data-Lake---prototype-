@@ -87,7 +87,7 @@ public class Menu extends javax.swing.JFrame {
     private void AddButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AddButtonMouseClicked
         // TODO add your handling code here:
            String userDir = System.getProperty("user.home");
-            fileChooser.setCurrentDirectory(new File(userDir +"/Desktop")); 
+            fileChooser.setCurrentDirectory(new File(userDir +"/Desktop")); //p
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
