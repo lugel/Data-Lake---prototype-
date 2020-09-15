@@ -13,8 +13,8 @@ import java.util.Date;
 public class NewFile {
     String name;
     String type;
-    Date date;
-    String tag1;
-    String tag2;
+    Date dateStart;
+     Date dateEnd;
+    String localization;
     
 }
