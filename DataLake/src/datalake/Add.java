@@ -55,7 +55,6 @@ public class Add extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Add new file");
-        setPreferredSize(new java.awt.Dimension(450, 350));
 
         jLabel1.setText("Date");
 
@@ -99,7 +98,7 @@ public class Add extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -122,8 +121,8 @@ public class Add extends javax.swing.JFrame {
             output = new BufferedWriter(new FileWriter("jezioroDanych//meta.txt", true));
             newFile.name = fileName.split("\\.")[0];
             newFile.type = fileName.split("\\.")[1];
-            newFile.date = new SimpleDateFormat("dd-mm-yyyy").parse(jTextField2.getText());
-            DateFormat dF = new SimpleDateFormat("dd-mm-yyyy");
+            newFile.date = jDateChooser1.getDate();
+           DateFormat dF = new SimpleDateFormat("dd-mm-yyyy");
             String dateToFile = dF.format(newFile.date);
             newFile.tag1 = jTextField4.getText();
             newFile.tag2 = jTextField5.getText();
@@ -133,8 +132,6 @@ public class Add extends javax.swing.JFrame {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParseException ex) {
-            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex); 
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
