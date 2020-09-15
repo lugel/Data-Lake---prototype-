@@ -6,19 +6,25 @@
 package datalake;
 
 import java.awt.Component;
+import java.awt.Frame;
+import java.awt.GraphicsConfiguration;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import static java.lang.System.gc;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -33,8 +39,13 @@ public class Add extends javax.swing.JFrame {
     public Add(String fN) {
         initComponents();
         fileName = fN;
+        
+        
     }
-    
+     Date dateStart;
+             Date dateEnd ;
+            String localization;
+            Boolean duplicateData = false;
     String fileName;
     
     NewFile newFile = new NewFile();
@@ -138,19 +149,24 @@ public class Add extends javax.swing.JFrame {
             newFile.name = fileName.split("\\.")[0];
             newFile.type = fileName.split("\\.")[1];
             newFile.dateStart = jDateChooser1.getDate();
-           DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
-            String dateToFileStart = dF.format(newFile.dateStart);
-          
               newFile.dateEnd = jDateChooser2.getDate();
-            String dateToFileEnd = dF.format(newFile.dateEnd);
-            
             newFile.localization = jTextField5.getText();
+            
+           duplicateData= checkDoubleInfo(newFile.dateStart,newFile.dateEnd,newFile.localization);
+            
+            if(duplicateData == true)
+            {  DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
+               String dateToFileStart = dF.format(newFile.dateStart);
+               String dateToFileEnd = dF.format(newFile.dateEnd);
             output.write(newFile.name + " " + newFile.type + " " + dateToFileStart + " " + dateToFileEnd + " " + newFile.localization + "\n");
+            }
             output.close();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(Add.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -163,7 +179,55 @@ public class Add extends javax.swing.JFrame {
     }//GEN-LAST:event_jDateChooser1PropertyChange
 
 //jDateChooser2.setEnabled(true);
+    public Boolean checkDoubleInfo(Date dateStartUser , Date dateEndUser, String localizationUser) 
+            throws FileNotFoundException, IOException, ParseException
+    {
+              BufferedReader reader;
+              DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
+                String[] data = null;
+              reader = new BufferedReader(new FileReader("jezioroDanych//meta.txt"));
+              String line;
+              while ((line = reader.readLine()) != null) {
+                //  records.add(line);
+                data = line.split(" ");
+                int numberSpace = line.split(" ").length;
+                //czytanie danych
+            dateStart = dF.parse(data[numberSpace-3]);
+             dateEnd = dF.parse(data[numberSpace-2]);
+            localization = data[numberSpace-1];
+            if( localization == null ? localizationUser == null : localization.equals(localizationUser))   
+                if(!(dateEndUser.before(dateStart) || dateStartUser.after(dateEnd))){
+                    //istnieje takie coś czy chcesz nadpiasć?
+                    
+            Object[] msg = {"Istnieją już dane dla podanej lokalizacji "+localization+" "
+                    + "z taką\nsamą datą jakie mają zostać wprowadzone.","Czy chcesz nadpisać dane dla istniejących dat?"};
+        Frame frame = new Frame();
+            int result = JOptionPane.showConfirmDialog(
+  frame,
+    msg,
+    "Ostrzeżenie",
+    JOptionPane.OK_CANCEL_OPTION,
+    JOptionPane.PLAIN_MESSAGE);
+
+if (result == JOptionPane.YES_OPTION){
+    //edycja
     
+    if(dateStartUser.before(dateStart) && dateEndUser.after(dateEnd)) //usunąć linijkę 
+   // return true;
+    if(dateStartUser.before(dateStart) && dateEndUser.after(dateStart)) //zmienić początek istniejącego o jeden dzień od zakończeania nowego
+      //  return true;
+    if(dateStartUser.before(dateEnd) && dateEndUser.after(dateEnd)) //zmieniamy koniec istniejącego o jeden dzień do ropzoczecia nowego 
+    
+    
+   return true;
+}
+else
+   return false;
+                }
+              }
+              
+              return true;
+    }
     /**
      * @param args the command line arguments
      */
@@ -173,11 +237,7 @@ public class Add extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-       
-
-        // this.add(jDateChooser1);
-        
-        
+      
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
