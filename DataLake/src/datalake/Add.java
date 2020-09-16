@@ -12,15 +12,23 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Writer;
 import static java.lang.System.gc;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -143,13 +151,13 @@ public class Add extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         try {
-
-            Writer output;
-            output = new BufferedWriter(new FileWriter("jezioroDanych//meta.txt", true));
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+         
             newFile.name = fileName.split("\\.")[0];
             newFile.type = fileName.split("\\.")[1];
             newFile.dateStart = jDateChooser1.getDate();
-              newFile.dateEnd = jDateChooser2.getDate();
+           //   newFile.dateEnd = jDateChooser2.getDate();
+         newFile.dateEnd =   sdf.parse(sdf.format(jDateChooser2.getDate()));
             newFile.localization = jTextField5.getText();
             
            duplicateData= checkDoubleInfo(newFile.dateStart,newFile.dateEnd,newFile.localization);
@@ -158,9 +166,12 @@ public class Add extends javax.swing.JFrame {
             {  DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
                String dateToFileStart = dF.format(newFile.dateStart);
                String dateToFileEnd = dF.format(newFile.dateEnd);
+                  Writer output;
+            output = new BufferedWriter(new FileWriter("jezioroDanych//meta.txt", true));
             output.write(newFile.name + " " + newFile.type + " " + dateToFileStart + " " + dateToFileEnd + " " + newFile.localization + "\n");
+           
+              output.close();
             }
-            output.close();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -174,6 +185,8 @@ public class Add extends javax.swing.JFrame {
         // TODO add your handling code here:
              if ("date".equals(evt.getPropertyName())) {
                      jDateChooser2.setEnabled(true);
+             if(jDateChooser2.getDate()!=null && jDateChooser1.getDate().after(jDateChooser2.getDate())) 
+                 jDateChooser2.setDate(null);
                 jDateChooser2.setMinSelectableDate(jDateChooser1.getDate());   
             }
     }//GEN-LAST:event_jDateChooser1PropertyChange
@@ -182,55 +195,252 @@ public class Add extends javax.swing.JFrame {
     public Boolean checkDoubleInfo(Date dateStartUser , Date dateEndUser, String localizationUser) 
             throws FileNotFoundException, IOException, ParseException
     {
+        Boolean boolCheck=false;
+        int result=1;
+        int rowNumber=1;
               BufferedReader reader;
               DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
                 String[] data = null;
               reader = new BufferedReader(new FileReader("jezioroDanych//meta.txt"));
               String line;
               while ((line = reader.readLine()) != null) {
-                //  records.add(line);
                 data = line.split(" ");
                 int numberSpace = line.split(" ").length;
                 //czytanie danych
-            dateStart = dF.parse(data[numberSpace-3]);
+                
+            dateStart = dF.parse(data[numberSpace-3]); //uwzględniamy to że są spacje w nazwie pliku
              dateEnd = dF.parse(data[numberSpace-2]);
             localization = data[numberSpace-1];
             if( localization == null ? localizationUser == null : localization.equals(localizationUser))   
                 if(!(dateEndUser.before(dateStart) || dateStartUser.after(dateEnd))){
-                    //istnieje takie coś czy chcesz nadpiasć?
                     
+                    reader.close();
+            
+                   if(result!=0)
+                   { 
             Object[] msg = {"Istnieją już dane dla podanej lokalizacji "+localization+" "
                     + "z taką\nsamą datą jakie mają zostać wprowadzone.","Czy chcesz nadpisać dane dla istniejących dat?"};
         Frame frame = new Frame();
-            int result = JOptionPane.showConfirmDialog(
-  frame,
-    msg,
-    "Ostrzeżenie",
-    JOptionPane.OK_CANCEL_OPTION,
-    JOptionPane.PLAIN_MESSAGE);
-
+            result = JOptionPane.showConfirmDialog(
+    frame,msg, "Ostrzeżenie",JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+                   }
 if (result == JOptionPane.YES_OPTION){
     //edycja
-    
-    if(dateStartUser.before(dateStart) && dateEndUser.after(dateEnd)) //usunąć linijkę 
-   // return true;
-    if(dateStartUser.before(dateStart) && dateEndUser.after(dateStart)) //zmienić początek istniejącego o jeden dzień od zakończeania nowego
-      //  return true;
-    if(dateStartUser.before(dateEnd) && dateEndUser.after(dateEnd)) //zmieniamy koniec istniejącego o jeden dzień do ropzoczecia nowego 
-    
-    
-   return true;
-}
-else
-   return false;
-                }
-              }
-              
-              return true;
+   
+    if((dateStartUser.before(dateStart) || dateStartUser.equals(dateStart))  
+            && (dateEndUser.after(dateEnd) || dateEndUser.equals(dateEnd))) //usunąć linijkę 
+    {
+        deleteLine(rowNumber);
+    // boolCheck = true;
     }
+   else if((dateStartUser.before(dateStart) || dateStartUser.equals(dateStart) )
+            && (dateEndUser.after(dateStart) || dateEndUser.equals(dateStart))) {
+      //zmienić początek istniejącego o jeden dzień od zakończeania nowego 
+        changeEndDateinMetaFile(rowNumber,dateEndUser);
+     // boolCheck = true;
+    }
+   else if((dateStartUser.before(dateEnd) || dateStartUser.equals(dateEnd))
+            && (dateEndUser.after(dateEnd) || dateEndUser.equals(dateEnd))) {//zmieniamy koniec istniejącego o jeden dzień do ropzoczecia nowego 
+          changeStartDateinMetaFile(rowNumber,dateStartUser);
+    //  boolCheck = true;
+    }
+    reader = new BufferedReader(new FileReader("jezioroDanych//meta.txt"));
+    for(int i=0;i<rowNumber;i++)
+        reader.readLine();
+    
+ }
+else
+    return false;
+
+                }
+            
+            rowNumber++;
+              }
+              reader.close();
+              return  true;
+    }
+     public static void changeEndDateinMetaFile(int rowNumber, Date endDateNew) throws IOException
+    {
+        
+        //dateEndUser o 1 dzień do przodu
+        Calendar c = Calendar.getInstance();
+        c.setTime(endDateNew);
+        
+        c.add(Calendar.DAY_OF_MONTH, 1); 
+        
+        endDateNew= c.getTime();
+        
+        DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
+               String dateToFile = dF.format(endDateNew);
+
+       String tempFile = "jezioroDanych//metaCopy.txt";
+       String originalFile = "jezioroDanych//meta.txt";
+       
+       File oldFile = new File(originalFile);
+       File newFile = new File(tempFile);
+       
+        String currentLine;
+        String dataReader[];
+
+        try (FileWriter fw = new FileWriter(tempFile,true)) {
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
+            
+            FileReader fr = new FileReader(originalFile);
+            BufferedReader br = new BufferedReader (fr);
+            
+            int rowNumberNew =1;
+            
+            while((currentLine = br.readLine()) !=null)
+            {
+                if(rowNumberNew == rowNumber)
+                {
+                    dataReader = currentLine.split(" ");
+                int numberSpace = currentLine.split(" ").length;
+
+                dataReader[numberSpace-3]=dateToFile;
+                // pw.print("\n");
+                for(int i=0 ;i<numberSpace;i++)
+                {  
+                    pw.print(dataReader[i]);
+                    if((i+1)!=numberSpace)
+                pw.print(" ");
+                }
+                pw.print("\n");
+                }
+                else
+                  pw.println(currentLine);
+                rowNumberNew++;
+            }
+            pw.flush();
+            pw.close();
+            fr.close();
+            br.close();
+            bw.close();
+            fw.close();
+        }
+       oldFile.delete();
+       File dump = new File(originalFile);
+       newFile.renameTo(dump);
+        
+        
+    }
+    
+      public static void changeStartDateinMetaFile(int rowNumber, Date startDateNew) throws IOException
+    {
+        
+        //dateStartUser o 1 dzień do tyłu
+        Calendar c = Calendar.getInstance();
+        c.setTime(startDateNew);
+        
+        c.add(Calendar.DAY_OF_MONTH, -1); 
+        
+        startDateNew= c.getTime();
+        
+        DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
+               String dateToFile = dF.format(startDateNew);
+
+       String tempFile = "jezioroDanych//metaCopy.txt";
+       String originalFile = "jezioroDanych//meta.txt";
+       
+       File oldFile = new File(originalFile);
+       File newFile = new File(tempFile);
+       
+        String currentLine;
+        String dataReader[];
+
+        try (FileWriter fw = new FileWriter(tempFile,true)) {
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
+            
+            FileReader fr = new FileReader(originalFile);
+            BufferedReader br = new BufferedReader (fr);
+            
+            int rowNumberNew =1;
+            
+            while((currentLine = br.readLine()) !=null)
+            {
+                if(rowNumberNew == rowNumber)
+                {
+                    dataReader = currentLine.split(" ");
+                int numberSpace = currentLine.split(" ").length;
+
+                dataReader[numberSpace-2]=dateToFile;
+                
+                 
+                for(int i=0 ;i<numberSpace;i++)
+                {  
+                    pw.print(dataReader[i]);
+                    if((i+1)!=numberSpace)
+                pw.print(" ");
+                }
+                    pw.print("\n");
+                }
+                else
+                  pw.println(currentLine);
+                rowNumberNew++;
+            }
+            pw.flush();
+            pw.close();
+            fr.close();
+            br.close();
+            bw.close();
+            fw.close();
+        }
+       oldFile.delete();
+       File dump = new File(originalFile);
+       newFile.renameTo(dump);
+        
+        
+    }
+
     /**
      * @param args the command line arguments
      */
+    public static void deleteLine(int rowNumber) throws IOException
+    {
+       String tempFile = "jezioroDanych//metaCopy.txt";
+       String originalFile = "jezioroDanych//meta.txt";
+       
+       File oldFile = new File(originalFile);
+       File newFile = new File(tempFile);
+       
+        String currentLine;
+       // String dataRead[];
+
+        try (FileWriter fw = new FileWriter(tempFile,true)) {
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
+            
+            FileReader fr = new FileReader(originalFile);
+            BufferedReader br = new BufferedReader (fr);
+            
+            int rowNumberNew =1;
+            
+            while((currentLine = br.readLine()) !=null)
+            {
+                //można w for zrobić
+                if(rowNumberNew != rowNumber)
+                {
+                    pw.println(currentLine);
+                    
+                }
+                rowNumberNew++;
+            }
+            pw.flush();
+            pw.close();
+            fr.close();
+            br.close();
+            bw.close();
+            fw.close();
+        }
+       oldFile.delete();
+       File dump = new File(originalFile);
+       newFile.renameTo(dump);
+        
+        
+    }
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
