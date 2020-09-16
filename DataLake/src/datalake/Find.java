@@ -44,32 +44,21 @@ public class Find extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
         jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        button1 = new java.awt.Button();
         button2 = new java.awt.Button();
+        jLabel5 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Find files");
         setResizable(false);
 
-        jLabel1.setText("Tag #1");
+        jLabel1.setText("Data poczatkowa");
 
-        jLabel2.setText("Tag #2");
+        jLabel2.setText("Data koncowa");
 
-        jLabel3.setText("Podaj Datę:");
-
-        jLabel4.setText("Średnia pręd dźwięku");
-
-        button1.setLabel("załadujDane");
-        button1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                button1ActionPerformed(evt);
-            }
-        });
+        jLabel3.setText("Szukany parametr");
 
         button2.setLabel("wyszukaj");
         button2.addActionListener(new java.awt.event.ActionListener() {
@@ -78,36 +67,29 @@ public class Find extends javax.swing.JFrame {
             }
         });
 
+        jLabel5.setText("Lokalizacja");
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Temperatura zmierzona dźwiękiem [°C]", "Ciśnienie atmosferyczne [mbar]", "Temperatura  [°C]", "Wilgotność [%]", "Wskazanie kompasu", "Prędkość U-V", "Prędkość wiatru [m/s]", "Kierunek wiatru", "Temperatura wewnątrz pomieszczenia" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(48, 48, 48)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addComponent(jLabel4))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(69, 69, 69)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))))
-                .addGap(25, 25, 25)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(25, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(button2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(72, 72, 72))))
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel3))
+                .addGap(46, 46, 46)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jTextField3)
+                    .addComponent(jTextField2)
+                    .addComponent(jTextField1)
+                    .addComponent(button2, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -121,20 +103,16 @@ public class Find extends javax.swing.JFrame {
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(button1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(button2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addComponent(button2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(29, 29, 29))
         );
 
         button2.getAccessibleContext().setAccessibleDescription("");
@@ -142,141 +120,138 @@ public class Find extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void button1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button1ActionPerformed
-        // TODO add your handling code here: ArrayList records = new ArrayList();
-        BufferedReader reader;
-        try {
-          //  ArrayList records = new ArrayList<DanaPogodowa> ();
-            reader = new BufferedReader(new FileReader("jezioroDanych//data08-2020.csv"));
-            DateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH);
-            String[] data = null;
-            String line;
-            reader.readLine();
-            reader.readLine();
-            while ((line = reader.readLine()) != null) {
-                //  records.add(line);
-                data = line.split(";");
-
-                DanaPogodowa pogoda = new DanaPogodowa();
-                pogoda.data= format.parse(data[0]);
-              
-                if(!data[2].isEmpty())
-                pogoda.predkoscDzwieku = Double.parseDouble(data[2]);
-                records.add(pogoda);
-            }
-            reader.close();
-            //testy
-            jTextField1.setText(String.valueOf(records.size()));
-            DanaPogodowa pogoda = new DanaPogodowa();
-            pogoda = (DanaPogodowa) records.get(1);
-            jTextField2.setText( String.valueOf( pogoda.predkoscDzwieku));
-              
-            String pattern = "dd-MM-yyyy";
-
-    DateFormat df = new SimpleDateFormat(pattern);
-
-    String todayAsString = df.format(pogoda.data);
-            
-                 jTextField3.setText( todayAsString);
-                 
-                 records.clear();
-        }
-
-        catch (FileNotFoundException ex) {
-            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParseException ex) {
-            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_button1ActionPerformed
-
+//--- BUTTON1 --- ZAŁADUJ DANE KOD ----
+//        BufferedReader reader;
+        //        try {
+            //          //  ArrayList records = new ArrayList<DanaPogodowa> ();
+            //            reader = new BufferedReader(new FileReader("jezioroDanych//data08-2020.csv"));
+            //            DateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH);
+            //            String[] data = null;
+            //            String line;
+            //            reader.readLine();
+            //            reader.readLine();
+            //            while ((line = reader.readLine()) != null) {
+                //                //  records.add(line);
+                //                data = line.split(";");
+                //
+                //                DanaPogodowa pogoda = new DanaPogodowa();
+                //                pogoda.data= format.parse(data[0]);
+                //
+                //                if(!data[2].isEmpty())
+                //                pogoda.predkoscDzwieku = Double.parseDouble(data[2]);
+                //                records.add(pogoda);
+                //            }
+            //            reader.close();
+            //            //testy
+            //            jTextField1.setText(String.valueOf(records.size()));
+            //            DanaPogodowa pogoda = new DanaPogodowa();
+            //            pogoda = (DanaPogodowa) records.get(1);
+            //            jTextField2.setText( String.valueOf( pogoda.predkoscDzwieku));
+            //
+            //            String pattern = "dd-MM-yyyy";
+            //
+            //            DateFormat df = new SimpleDateFormat(pattern);
+            //
+            //            String todayAsString = df.format(pogoda.data);
+            //
+            //            jTextField3.setText( todayAsString);
+            //
+            //            records.clear();
+            //        }
+        //
+        //        catch (FileNotFoundException ex) {
+            //            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+            //        } catch (IOException ex) {
+            //            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+            //        } catch (ParseException ex) {
+            //            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+            //        }  
+    
+    
     private void button2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button2ActionPerformed
      
-        double sumaPomiaru=0;
-        int licznik=0;
-            String getDate = jTextField4.getText();
-            String fileName= "jezioroDanych//data"+getDate.substring(3)+".csv";
-         try {
-             załadujDane(fileName);
-         } catch (FileNotFoundException ex) {
-             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-         }
-	for(DanaPogodowa daneLoop : records)
-        {  
-            String pattern = "dd-MM-yyyy";
-
-        DateFormat df = new SimpleDateFormat(pattern);
-
-        String dataPomiaru = df.format( daneLoop.data);
-           
-            if(dataPomiaru.equals(getDate))
-            {
-                sumaPomiaru+=daneLoop.predkoscDzwieku;
-                licznik++;
-                
-            }
-        }
-         DecimalFormat twoDForm = new DecimalFormat("#.##");
- jTextField5.setText( String.valueOf( twoDForm.format(sumaPomiaru/licznik)));
- 
- //po odczycie czyścimy listę 
- 
-    records.clear();
+//        double sumaPomiaru=0;
+//        int licznik=0;
+//            String getDate = jTextField4.getText();
+//            String fileName= "jezioroDanych//data"+getDate.substring(3)+".csv";
+//         try {
+//             załadujDane(fileName);
+//         } catch (FileNotFoundException ex) {
+//             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+//         }
+//	for(DanaPogodowa daneLoop : records)
+//        {  
+//            String pattern = "dd-MM-yyyy";
+//
+//            DateFormat df = new SimpleDateFormat(pattern);
+//
+//            String dataPomiaru = df.format( daneLoop.data);
+//           
+//            if(dataPomiaru.equals(getDate))
+//            {
+//                sumaPomiaru+=daneLoop.predkoscDzwieku;
+//                licznik++;
+//                
+//            }
+//        }
+//        DecimalFormat twoDForm = new DecimalFormat("#.##");
+//        jTextField5.setText( String.valueOf( twoDForm.format(sumaPomiaru/licznik)));
+// 
+// //po odczycie czyścimy listę 
+// 
+//    records.clear();
         // TODO add your handling code here:
     }//GEN-LAST:event_button2ActionPerformed
 
-     public  void załadujDane(String plik) throws FileNotFoundException {
-             BufferedReader reader;
-        try {
-          //  ArrayList records = new ArrayList<DanaPogodowa> ();
-            reader = new BufferedReader(new FileReader(plik));
-            DateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH);
-            String[] data = null;
-            String line;
-            reader.readLine();
-            reader.readLine();
-            while ((line = reader.readLine()) != null) {
-                //  records.add(line);
-                data = line.split(";");
-
-                DanaPogodowa pogoda = new DanaPogodowa();
-                pogoda.data= format.parse(data[0]);
-              
-                if(!data[2].isEmpty())
-                pogoda.predkoscDzwieku = Double.parseDouble(data[2]);
-                records.add(pogoda);
-            }
-            reader.close();
-            //testy
-            jTextField1.setText(String.valueOf(records.size()));
-            DanaPogodowa pogoda = new DanaPogodowa();
-            pogoda = (DanaPogodowa) records.get(1);
-            jTextField2.setText( String.valueOf( pogoda.predkoscDzwieku));
-              
-            String pattern = "MM-dd-yyyy";
-
-    DateFormat df = new SimpleDateFormat(pattern);
-
-    String todayAsString = df.format(pogoda.data);
-            
-                 jTextField3.setText( todayAsString);
-                
-        }
-
-        catch (FileNotFoundException ex) {
-            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParseException ex) {
-            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-        }
-         
-         
-         
-         
-     }
-    /**
+//     public  void załadujDane(String plik) throws FileNotFoundException {
+//             BufferedReader reader;
+//        try {
+//          //  ArrayList records = new ArrayList<DanaPogodowa> ();
+//            reader = new BufferedReader(new FileReader(plik));
+//            DateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH);
+//            String[] data = null;
+//            String line;
+//            reader.readLine();
+//            reader.readLine();
+//            while ((line = reader.readLine()) != null) {
+//                //  records.add(line);
+//                data = line.split(";");
+//
+//                DanaPogodowa pogoda = new DanaPogodowa();
+//                pogoda.data= format.parse(data[0]);
+//              
+//                if(!data[2].isEmpty())
+//                pogoda.predkoscDzwieku = Double.parseDouble(data[2]);
+//                records.add(pogoda);
+//            }
+//            reader.close();
+//            //testy
+//            jTextField1.setText(String.valueOf(records.size()));
+//            DanaPogodowa pogoda = new DanaPogodowa();
+//            pogoda = (DanaPogodowa) records.get(1);
+//            jTextField2.setText( String.valueOf( pogoda.predkoscDzwieku));
+//              
+//            String pattern = "MM-dd-yyyy";
+//
+//            DateFormat df = new SimpleDateFormat(pattern);
+//
+//            String todayAsString = df.format(pogoda.data);
+//            
+//            jTextField3.setText( todayAsString);
+//                
+//        }
+//
+//        catch (FileNotFoundException ex) {
+//            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (IOException ex) {
+//            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (ParseException ex) {
+//            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//         
+//     }
+// 
+     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) throws FileNotFoundException {
@@ -314,16 +289,14 @@ public class Find extends javax.swing.JFrame {
         
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private java.awt.Button button1;
     private java.awt.Button button2;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
     // End of variables declaration//GEN-END:variables
 }
