@@ -191,11 +191,10 @@ public class Add extends javax.swing.JFrame {
             }
     }//GEN-LAST:event_jDateChooser1PropertyChange
 
-//jDateChooser2.setEnabled(true);
     public Boolean checkDoubleInfo(Date dateStartUser , Date dateEndUser, String localizationUser) 
             throws FileNotFoundException, IOException, ParseException
     {
-        Boolean boolCheck=false;
+      
         int result=1;
         int rowNumber=1;
               BufferedReader reader;
@@ -244,6 +243,10 @@ if (result == JOptionPane.YES_OPTION){
           changeStartDateinMetaFile(rowNumber,dateStartUser);
     //  boolCheck = true;
     }
+     else if(dateStartUser.after(dateStart) && dateEndUser.before(dateEnd) ) {//zmieniamy koniec istniejącego o jeden dzień do ropzoczecia nowego 
+          changeDateinMetaFile(rowNumber,dateEndUser,dateStartUser);
+    //  boolCheck = true;
+    }
     reader = new BufferedReader(new FileReader("jezioroDanych//meta.txt"));
     for(int i=0;i<rowNumber;i++)
         reader.readLine();
@@ -258,7 +261,92 @@ else
               }
               reader.close();
               return  true;
+    }                                                       //od usera te daty
+     public static void changeDateinMetaFile(int rowNumber, Date endDateNew , Date startDateNew) throws IOException
+    {
+        
+        //dateEndUser o 1 dzień do przodu
+        Calendar c = Calendar.getInstance();
+        c.setTime(endDateNew);
+        c.add(Calendar.DAY_OF_MONTH, 1); 
+        endDateNew= c.getTime();
+        
+        c.setTime(startDateNew);
+        c.add(Calendar.DAY_OF_MONTH, -1); 
+        startDateNew = c.getTime();
+        
+        DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
+               String dateEndToFile = dF.format(startDateNew);
+                String dateStartToFile = dF.format(endDateNew);
+
+       String tempFile = "jezioroDanych//metaCopy.txt";
+       String originalFile = "jezioroDanych//meta.txt";
+       
+       File oldFile = new File(originalFile);
+       File newFile = new File(tempFile);
+       
+        String currentLine;
+        String dataReader[];
+        
+         String dataCopyReader[];
+
+        try (FileWriter fw = new FileWriter(tempFile,true)) {
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
+            
+            FileReader fr = new FileReader(originalFile);
+            BufferedReader br = new BufferedReader (fr);
+            
+            int rowNumberNew =1;
+            
+            while((currentLine = br.readLine()) !=null)
+            {
+                if(rowNumberNew == rowNumber)
+                {
+                    dataReader = currentLine.split(" ");
+                    dataCopyReader = currentLine.split(" ");
+                    
+                int numberSpace = currentLine.split(" ").length;
+
+                dataReader[numberSpace-3]=dateStartToFile;
+                dataCopyReader[numberSpace-2]=dateEndToFile;
+                // pw.print("\n");
+                for(int i=0 ;i<numberSpace;i++)
+                {  
+                    pw.print(dataReader[i]);
+                    if((i+1)!=numberSpace)
+                pw.print(" ");
+                }
+                pw.print("\n");
+                
+                 for(int i=0 ;i<numberSpace;i++)
+                {  
+                    pw.print(dataCopyReader[i]);
+                    if((i+1)!=numberSpace)
+                pw.print(" ");
+                }
+                pw.print("\n");
+                
+                }
+                else
+                  pw.println(currentLine);
+                rowNumberNew++;
+            }
+            pw.flush();
+            pw.close();
+            fr.close();
+            br.close();
+            bw.close();
+            fw.close();
+        }
+       oldFile.delete();
+       File dump = new File(originalFile);
+       newFile.renameTo(dump);
+        
+        
     }
+    
+    
      public static void changeEndDateinMetaFile(int rowNumber, Date endDateNew) throws IOException
     {
         
@@ -404,10 +492,8 @@ else
        
        File oldFile = new File(originalFile);
        File newFile = new File(tempFile);
-       
         String currentLine;
        // String dataRead[];
-
         try (FileWriter fw = new FileWriter(tempFile,true)) {
             BufferedWriter bw = new BufferedWriter(fw);
             PrintWriter pw = new PrintWriter(bw);
