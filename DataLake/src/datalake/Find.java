@@ -172,7 +172,7 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
             reader.readLine();
             double min=99999.99;
             double max=-9999.99;
-            double avg=0;
+            double avg=0.0;
     
             
             switch (whatToDo) {
@@ -181,13 +181,14 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
                     while ((line = reader.readLine()) != null) {
                         data = line.split(";");
                 
-                        if (format.parse(data[0]).before(jDateChooser1.getDate()) ||
-                            format.parse(data[0]).after(jDateChooser2.getDate())) {
+                        if ((data[comboBoxChoice+2].isEmpty()) || (format.parse(data[0]).before(jDateChooser1.getDate()) &&
+                            format.parse(data[0]).after(jDateChooser2.getDate()))) {
                             continue;
                         }
-                        
-                        avg+= Double.parseDouble(data[comboBoxChoice+2]);
+
+                        avg+= Double.parseDouble(data[comboBoxChoice+2].trim());
                         counter++;
+                        
                     }
                     avg/=counter;
                     Frame frame1 = new Frame();
@@ -198,8 +199,8 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
                     while ((line = reader.readLine()) != null) {
                         data = line.split(";");
                 
-                        if (format.parse(data[0]).before(jDateChooser1.getDate()) ||
-                            format.parse(data[0]).after(jDateChooser2.getDate())) {
+                        if ((data[comboBoxChoice+2].isEmpty()) || (format.parse(data[0]).before(jDateChooser1.getDate()) &&
+                            format.parse(data[0]).after(jDateChooser2.getDate()))) {
                             continue;
                         }
                         
@@ -216,8 +217,8 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
                     while ((line = reader.readLine()) != null) {
                         data = line.split(";");
                 
-                        if (format.parse(data[0]).before(jDateChooser1.getDate()) ||
-                            format.parse(data[0]).after(jDateChooser2.getDate())) {
+                        if ((data[comboBoxChoice+2].isEmpty()) || (format.parse(data[0]).before(jDateChooser1.getDate()) &&
+                            format.parse(data[0]).after(jDateChooser2.getDate()))) {
                             continue;
                         }
                         
@@ -327,13 +328,19 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
             BufferedReader reader;
             reader = new BufferedReader(new FileReader("jezioroDanych//meta.txt"));
             String line;
-            
+
+            dateEndEntered.setHours(0);
+            dateEndEntered.setMinutes(0);
+            dateEndEntered.setSeconds(0);
+            dateEndEntered.setTime(0);
+
+                
             while ((line = reader.readLine()) != null) {
                 data = line.split(" ");
                 int numberSpace = line.split(" ").length; //liczenie spacji w lini
                 dateStartFile = dF.parse(data[numberSpace-3]); //uwzględniamy to że są spacje w nazwie pliku
                 dateEndFile = dF.parse(data[numberSpace-2]);
-                locationFile = data[numberSpace-1];
+                locationFile = data[numberSpace-1];    
                 
                 if ((dateStartFile.before(dateStartEntered) || dateStartFile.equals(dateStartEntered)) &&
                         (dateEndFile.after(dateEndEntered) || dateEndFile.equals(dateEndEntered)) &&
@@ -341,7 +348,8 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
                         viableLines.add(line);
                 }             
             }
-             
+        
+            
             System.out.println(viableLines);
 //            if (viableLines.isEmpty()) {
 //                Frame frame = new Frame();
