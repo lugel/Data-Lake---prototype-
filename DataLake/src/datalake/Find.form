@@ -120,17 +120,18 @@
     <Component class="javax.swing.JComboBox" name="jComboBox1">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="10">
-            <StringItem index="0" value="Temperatura zmierzona d&#x17a;wi&#x119;kiem [&#xb0;C]"/>
-            <StringItem index="1" value="Ci&#x15b;nienie atmosferyczne [mbar]"/>
-            <StringItem index="2" value="Temperatura  [&#xb0;C]"/>
-            <StringItem index="3" value="Wilgotno&#x15b;&#x107; [%]"/>
-            <StringItem index="4" value="Wskazanie kompasu [&#xb0;]"/>
-            <StringItem index="5" value="Pr&#x119;dko&#x15b;&#x107; U-V"/>
-            <StringItem index="6" value="Pr&#x119;dko&#x15b;&#x107; wiatru [m/s]"/>
-            <StringItem index="7" value="Kierunek wiatru"/>
-            <StringItem index="8" value="Skladnik W - &#x15b;s pionowa predkosci wiatru [m/s]"/>
-            <StringItem index="9" value="Temperatura wewn&#x105;trz pomieszczenia [&#xb0;C]"/>
+          <StringArray count="11">
+            <StringItem index="0" value="Pr&#x119;dko&#x15b;&#x107; d&#x17a;wi&#x119;ku [m/s]"/>
+            <StringItem index="1" value="Temperatura zmierzona d&#x17a;wi&#x119;kiem [&#xb0;C]"/>
+            <StringItem index="2" value="Ci&#x15b;nienie atmosferyczne [mbar]"/>
+            <StringItem index="3" value="Temperatura  [&#xb0;C]"/>
+            <StringItem index="4" value="Wilgotno&#x15b;&#x107; [%]"/>
+            <StringItem index="5" value="Wskazanie kompasu [&#xb0;]"/>
+            <StringItem index="6" value="Pr&#x119;dko&#x15b;&#x107; U-V"/>
+            <StringItem index="7" value="Pr&#x119;dko&#x15b;&#x107; wiatru [m/s]"/>
+            <StringItem index="8" value="Kierunek wiatru"/>
+            <StringItem index="9" value="Skladnik W - &#x15b;s pionowa predkosci wiatru [m/s]"/>
+            <StringItem index="10" value="Temperatura wewn&#x105;trz pomieszczenia [&#xb0;C]"/>
           </StringArray>
         </Property>
       </Properties>

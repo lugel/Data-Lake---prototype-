@@ -15,16 +15,16 @@ import java.util.Date;
 public class DanaPogodowa {
     Date data;
     Time czas;
-  double predkoscDzwieku; //[m/s];
+    double predkoscDzwieku; //[m/s];
     double tempDzwiekiem; //[°C];
-   double cisnienieAtm; // [mbar];
-   double temperatura; // [°C];
-   double wilgotnosc; //[%];
+    double cisnienieAtm; // [mbar];
+    double temperatura; // [°C];
+    double wilgotnosc; //[%];
     double kompas; 
-   double predkosc_UV;
-   double predkoscWiatru; // [m/s];
+    double predkosc_UV;
+    double predkoscWiatru; // [m/s];
     double kierunek;
     double wysokosc; 
-   double tempWewnatrzPomieszczenia; //113 [°C]
+    double tempWewnatrzPomieszczenia; //113 [°C]
     
 }
