@@ -72,7 +72,7 @@ public class Find extends javax.swing.JFrame {
 
         jLabel5.setText("Lokalizacja");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Temperatura zmierzona dźwiękiem [°C]", "Ciśnienie atmosferyczne [mbar]", "Temperatura  [°C]", "Wilgotność [%]", "Wskazanie kompasu", "Prędkość U-V", "Prędkość wiatru [m/s]", "Kierunek wiatru", "Temperatura wewnątrz pomieszczenia" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Temperatura zmierzona dźwiękiem [°C]", "Ciśnienie atmosferyczne [mbar]", "Temperatura  [°C]", "Wilgotność [%]", "Wskazanie kompasu [°]", "Prędkość U-V", "Prędkość wiatru [m/s]", "Kierunek wiatru", "Skladnik W - os pionowa predkosci wiatru [m/s]", "Temperatura wewnątrz pomieszczenia [°C]" }));
 
         jDateChooser1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
