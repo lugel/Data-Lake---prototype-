@@ -5,9 +5,11 @@
  */
 package datalake;
 
+import java.awt.Desktop;
 import java.awt.Frame;
 import java.awt.List;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -204,6 +206,19 @@ public class Find extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        
+        //otwieranie pliku
+          File file = new File("jezioroDanych//bitmapaTEST.bmp");
+          Desktop desktop = Desktop.getDesktop();
+        if(file.exists()) try {
+            desktop.open(file);
+            
+            //otwieranie pliku
+            
+            
+          } catch (IOException ex) {
+              Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+          }
                  ArrayList<DanaPogodowa> records = new ArrayList<DanaPogodowa>();
      SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
   try {
