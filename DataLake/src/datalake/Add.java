@@ -137,13 +137,15 @@ public class Add extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        if(jDateChooser2.getDate()!=null && jDateChooser1.getDate()!=null)
+        if(jTextField5.getText().length()>0) {//isnieje miasto Y i A 
         try {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
          
             newFile.name = fileName.split("\\.")[0];
             newFile.type = fileName.split("\\.")[1];
             newFile.dateStart = jDateChooser1.getDate();
-         newFile.dateEnd =   sdf.parse(sdf.format(jDateChooser2.getDate())); //pobierało godzinę nie wiem czemu
+            newFile.dateEnd =   sdf.parse(sdf.format(jDateChooser2.getDate())); //pobierało godzinę nie wiem czemu
             newFile.localization = jTextField5.getText();
             
            duplicateData= checkDoubleInfo(newFile.dateStart,newFile.dateEnd,newFile.localization);
@@ -164,6 +166,18 @@ public class Add extends javax.swing.JFrame {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParseException ex) {
             Logger.getLogger(Add.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        }
+        else{
+           Frame frame = new Frame();
+               JOptionPane.showMessageDialog(frame, "Za krótka nazwa lokalizacji.",
+                       "Komunikat",JOptionPane.ERROR_MESSAGE);   
+        }
+        else
+        {
+            Frame frame = new Frame();
+               JOptionPane.showMessageDialog(frame, "Brak wyboru daty.",
+                       "Komunikat",JOptionPane.ERROR_MESSAGE);   
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 

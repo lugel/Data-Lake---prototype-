@@ -6,17 +6,14 @@
 package datalake;
 
 import com.toedter.calendar.JTextFieldDateEditor;
-import static datalake.Add.blockDateInput;
 import java.awt.Desktop;
 import java.awt.Frame;
-import java.awt.List;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,8 +22,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javax.swing.JOptionPane;
 
 /**
@@ -274,6 +269,41 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
               
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    
+    public static void readData() throws FileNotFoundException, IOException, ParseException
+    { 
+         Date dateStart, dateEnd;
+           DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+          Date dateStartChoose = jDateChooser1.getDate();
+             Date dateEndChoose = sdf.parse(sdf.format(jDateChooser2.getDate()));
+        
+        String[] data = null;
+            BufferedReader reader;
+             reader = new BufferedReader(new FileReader("jezioroDanych//meta.txt"));
+               String line;
+           while ((line = reader.readLine()) != null) {  //czytanue 
+              data = line.split(" ");
+                int numberSpace = line.split(" ").length; 
+                 dateStart = dF.parse(data[numberSpace-3]); //uwzględniamy to że są spacje w nazwie pliku
+             dateEnd = dF.parse(data[numberSpace-2]);
+             
+             //jeżeli nazwa się zgadza porównujemy daty
+             if(jTextField3.getText().equals(data[numberSpace-1])){
+             
+               if((dateStartChoose.before(dateStart) || dateStartChoose.equals(dateStart))  
+            && (dateEndChoose.after(dateEnd) || dateEndChoose.equals(dateEnd)))
+             
+             
+             
+             System.out.println("");
+             
+             
+             
+           }
+    }
+    }
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         ArrayList<String> viableLines = new ArrayList<String>();
@@ -313,17 +343,17 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
             }
              
             System.out.println(viableLines);
-            if (viableLines.isEmpty()) {
-                Frame frame = new Frame();
-                JOptionPane.showMessageDialog(frame, "Brak danych dla podanego miejsca\nw danym okresie czasu.",
-                       "Komunikat",JOptionPane.WARNING_MESSAGE);
-            }
+//            if (viableLines.isEmpty()) {
+//                Frame frame = new Frame();
+//                JOptionPane.showMessageDialog(frame, "Brak danych dla podanego miejsca\nw danym okresie czasu.",
+//                       "Komunikat",JOptionPane.WARNING_MESSAGE);
+//            }
 
-        } catch (ParseException ex) {
-            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
+            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
         }
         
@@ -355,54 +385,7 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
-//     public  void załadujDane(String plik) throws FileNotFoundException {
-//             BufferedReader reader;
-//        try {
-//          //  ArrayList records = new ArrayList<DanaPogodowa> ();
-//            reader = new BufferedReader(new FileReader(plik));
-//            DateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH);
-//            String[] data = null;
-//            String line;
-//            reader.readLine();
-//            reader.readLine();
-//            while ((line = reader.readLine()) != null) {
-//                //  records.add(line);
-//                data = line.split(";");
-//
-//                DanaPogodowa pogoda = new DanaPogodowa();
-//                pogoda.data= format.parse(data[0]);
-//              
-//                if(!data[2].isEmpty())
-//                pogoda.predkoscDzwieku = Double.parseDouble(data[2]);
-//                records.add(pogoda);
-//            }
-//            reader.close();
-//            //testy
-//            jTextField1.setText(String.valueOf(records.size()));
-//            DanaPogodowa pogoda = new DanaPogodowa();
-//            pogoda = (DanaPogodowa) records.get(1);
-//            jTextField2.setText( String.valueOf( pogoda.predkoscDzwieku));
-//              
-//            String pattern = "MM-dd-yyyy";
-//
-//            DateFormat df = new SimpleDateFormat(pattern);
-//
-//            String todayAsString = df.format(pogoda.data);
-//            
-//            jTextField3.setText( todayAsString);
-//                
-//        }
-//
-//        catch (FileNotFoundException ex) {
-//            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (IOException ex) {
-//            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (ParseException ex) {
-//            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//         
-//     }
-// 
+
   public static void   blockDateInput()
   {
       JTextFieldDateEditor editor = (JTextFieldDateEditor) jDateChooser1.getDateEditor();
@@ -450,6 +433,104 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
     
         
     }
+    //     public  void załadujDane(String plik) throws FileNotFoundException {
+//             BufferedReader reader;
+//        try {
+//          //  ArrayList records = new ArrayList<DanaPogodowa> ();
+//            reader = new BufferedReader(new FileReader(plik));
+//            DateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH);
+//            String[] data = null;
+//            String line;
+//            reader.readLine();
+//            reader.readLine();
+//            while ((line = reader.readLine()) != null) {
+//                //  records.add(line);
+//                data = line.split(";");
+//
+//                DanaPogodowa pogoda = new DanaPogodowa();
+//                pogoda.data= format.parse(data[0]);
+//              
+//                if(!data[2].isEmpty())
+//                pogoda.predkoscDzwieku = Double.parseDouble(data[2]);
+//                records.add(pogoda);
+//            }
+//            reader.close();
+//            //testy
+//            jTextField1.setText(String.valueOf(records.size()));
+//            DanaPogodowa pogoda = new DanaPogodowa();
+//            pogoda = (DanaPogodowa) records.get(1);
+//            jTextField2.setText( String.valueOf( pogoda.predkoscDzwieku));
+//              
+//            String pattern = "MM-dd-yyyy";
+//
+//            DateFormat df = new SimpleDateFormat(pattern);
+//
+//            String todayAsString = df.format(pogoda.data);
+//            
+//            jTextField3.setText( todayAsString);
+//                
+//        }
+//
+//        catch (FileNotFoundException ex) {
+//            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (IOException ex) {
+//            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (ParseException ex) {
+//            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//         
+//     }
+// 
+    
+    //--- BUTTON1 --- ZAŁADUJ DANE KOD ----
+//        BufferedReader reader;
+        //        try {
+            //          //  ArrayList records = new ArrayList<DanaPogodowa> ();
+            //            reader = new BufferedReader(new FileReader("jezioroDanych//data08-2020.csv"));
+            //            DateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH);
+            //            String[] data = null;
+            //            String line;
+            //            reader.readLine();
+            //            reader.readLine();
+            //            while ((line = reader.readLine()) != null) {
+                //                //  records.add(line);
+                //                data = line.split(";");
+                //
+                //                DanaPogodowa pogoda = new DanaPogodowa();
+                //                pogoda.data= format.parse(data[0]);
+                //
+                //                if(!data[2].isEmpty())
+                //                pogoda.predkoscDzwieku = Double.parseDouble(data[2]);
+                //                records.add(pogoda);
+                //            }
+            //            reader.close();
+            //            //testy
+            //            jTextField1.setText(String.valueOf(records.size()));
+            //            DanaPogodowa pogoda = new DanaPogodowa();
+            //            pogoda = (DanaPogodowa) records.get(1);
+            //            jTextField2.setText( String.valueOf( pogoda.predkoscDzwieku));
+            //
+            //            String pattern = "dd-MM-yyyy";
+            //
+            //            DateFormat df = new SimpleDateFormat(pattern);
+            //
+            //            String todayAsString = df.format(pogoda.data);
+            //
+            //            jTextField3.setText( todayAsString);
+            //
+            //            records.clear();
+            //        }
+        //
+        //        catch (FileNotFoundException ex) {
+            //            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+            //        } catch (IOException ex) {
+            //            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+            //        } catch (ParseException ex) {
+            //            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+            //        }  
+    
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -462,6 +543,6 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JTextField jTextField3;
+    private static javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables
 }
