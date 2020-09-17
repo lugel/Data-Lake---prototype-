@@ -5,6 +5,8 @@
  */
 package datalake;
 
+import com.toedter.calendar.JTextFieldDateEditor;
+import static datalake.Add.blockDateInput;
 import java.awt.Desktop;
 import java.awt.Frame;
 import java.awt.List;
@@ -37,6 +39,7 @@ public class Find extends javax.swing.JFrame {
    Boolean  possibleSearch;
     public Find() {
         initComponents();
+         blockDateInput();
         possibleSearch=true;
     }
 
@@ -91,7 +94,7 @@ public class Find extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("jButton2");
+        jButton2.setText("otwórz plik");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -236,7 +239,13 @@ public class Find extends javax.swing.JFrame {
           } catch (IOException ex) {
               Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
           }
-                 ArrayList<DanaPogodowa> records = new ArrayList<DanaPogodowa>();
+              
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        
+           ArrayList<DanaPogodowa> records = new ArrayList<DanaPogodowa>();
      SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
   try {
             ArrayList <Date> dateRangeCheck = new ArrayList<Date>();
@@ -293,12 +302,6 @@ public class Find extends javax.swing.JFrame {
          } catch (IOException ex) {
              Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
          }
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        
-        
         
         
         
@@ -352,7 +355,13 @@ public class Find extends javax.swing.JFrame {
 //         
 //     }
 // 
-
+  public static void   blockDateInput()
+  {
+      JTextFieldDateEditor editor = (JTextFieldDateEditor) jDateChooser1.getDateEditor();
+            editor.setEditable(false);
+      editor = (JTextFieldDateEditor) jDateChooser2.getDateEditor();
+          editor.setEditable(false);
+  }
      /**
      * @param args the command line arguments
      * @throws java.io.FileNotFoundException
@@ -398,8 +407,8 @@ public class Find extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
-    private com.toedter.calendar.JDateChooser jDateChooser2;
+    private static com.toedter.calendar.JDateChooser jDateChooser1;
+    private static com.toedter.calendar.JDateChooser jDateChooser2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

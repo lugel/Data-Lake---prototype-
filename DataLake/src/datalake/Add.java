@@ -5,6 +5,7 @@
  */
 package datalake;
 
+import com.toedter.calendar.JTextFieldDateEditor;
 import java.awt.Frame;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -37,8 +38,7 @@ public class Add extends javax.swing.JFrame {
     public Add(String fN) {
         initComponents();
         fileName = fN;
-        
-        
+         blockDateInput();
     }
      Date dateStart;
              Date dateEnd ;
@@ -129,7 +129,7 @@ public class Add extends javax.swing.JFrame {
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton1)
-                .addContainerGap(156, Short.MAX_VALUE))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
 
         pack();
@@ -509,7 +509,13 @@ else
         
         
     }
-
+  public static void   blockDateInput()
+  {
+      JTextFieldDateEditor editor = (JTextFieldDateEditor) jDateChooser1.getDateEditor();
+            editor.setEditable(false);
+      editor = (JTextFieldDateEditor) jDateChooser2.getDateEditor();
+          editor.setEditable(false);
+  }
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -539,6 +545,7 @@ else
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Add("").setVisible(true);
+               
             }
         });
     }

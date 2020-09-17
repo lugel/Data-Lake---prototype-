@@ -43,7 +43,6 @@ public class Menu extends javax.swing.JFrame {
 
             setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
             setTitle("Main Menu");
-            setPreferredSize(new java.awt.Dimension(450, 300));
             setResizable(false);
 
             FindButton.setText("Find");
@@ -86,6 +85,7 @@ public class Menu extends javax.swing.JFrame {
 
     private void AddButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AddButtonMouseClicked
         // TODO add your handling code here:
+       
            String userDir = System.getProperty("user.home");
             fileChooser.setCurrentDirectory(new File(userDir +"/Desktop")); //p
         int returnVal = fileChooser.showOpenDialog(this);
