@@ -5,6 +5,7 @@
  */
 package datalake;
 
+import java.awt.Frame;
 import java.awt.List;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -15,9 +16,14 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -26,9 +32,10 @@ import java.util.logging.Logger;
 public class Find extends javax.swing.JFrame {
 
      ArrayList<DanaPogodowa> records = new ArrayList<DanaPogodowa>();
-
+   Boolean  possibleSearch;
     public Find() {
         initComponents();
+        possibleSearch=true;
     }
 
     /**
@@ -49,6 +56,7 @@ public class Find extends javax.swing.JFrame {
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jDateChooser2 = new com.toedter.calendar.JDateChooser();
         jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Find files");
@@ -74,6 +82,13 @@ public class Find extends javax.swing.JFrame {
 
         jButton1.setText("wyszukaj");
 
+        jButton2.setText("jButton2");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -94,7 +109,9 @@ public class Find extends javax.swing.JFrame {
                             .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jDateChooser2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(139, 139, 139)
+                        .addGap(31, 31, 31)
+                        .addComponent(jButton2)
+                        .addGap(35, 35, 35)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -118,7 +135,9 @@ public class Find extends javax.swing.JFrame {
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2))
                 .addGap(29, 29, 29))
         );
 
@@ -183,6 +202,67 @@ public class Find extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jDateChooser1PropertyChange
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+                 ArrayList<DanaPogodowa> records = new ArrayList<DanaPogodowa>();
+     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+  try {
+            ArrayList <Date> dateRangeCheck = new ArrayList<Date>();
+             ArrayList <Date> dateRangeFile = new ArrayList<Date>();
+              Date dateStart = jDateChooser1.getDate();
+             Date dateEnd;
+       
+             dateEnd = sdf.parse(sdf.format(jDateChooser2.getDate()));
+             Calendar c = Calendar.getInstance();
+            c.setTime(dateStart);
+            
+            while(!(c.getTime().after(dateEnd))){
+                dateRangeCheck.add(c.getTime());
+                  c.add(Calendar.DAY_OF_MONTH, 1); 
+            }
+             DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
+
+          String[] data = null;
+            BufferedReader reader;
+             reader = new BufferedReader(new FileReader("jezioroDanych//meta.txt"));
+               String line;
+           while ((line = reader.readLine()) != null) {
+              data = line.split(" ");
+                int numberSpace = line.split(" ").length; //liczenie spacji w lini
+              dateStart = dF.parse(data[numberSpace-3]); //uwzględniamy to że są spacje w nazwie pliku
+             dateEnd = dF.parse(data[numberSpace-2]);
+                
+             c.setTime(dateStart);
+              while(!(c.getTime().after(dateEnd))){
+                dateRangeFile.add(c.getTime());
+                  c.add(Calendar.DAY_OF_MONTH, 1); 
+            }
+            
+              for (int i=0; i< dateRangeFile.size();i++)
+                    for(int j=0;j<dateRangeCheck.size();j++)
+              {
+                  if(dateRangeCheck.get(j).equals(dateRangeFile.get(i)))
+                  dateRangeCheck.remove(j); //czyścimy dni które są w meta.txt
+              } 
+           }
+           if(dateRangeCheck.isEmpty()!=true) //jesli nie zostało wyczyszczone nie wykonujemy wyszukania 
+           {
+               possibleSearch=false;
+              // System.out.print("isEmpty");
+               Frame frame = new Frame();
+               JOptionPane.showMessageDialog(frame, "Brak danych dla\npodanego zakresu dat.",
+                       "Komunikat",JOptionPane.WARNING_MESSAGE);
+           }
+           
+              } catch (ParseException ex) {
+             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+         } catch (FileNotFoundException ex) {
+             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+         } catch (IOException ex) {
+             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+         }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
 //     public  void załadujDane(String plik) throws FileNotFoundException {
 //             BufferedReader reader;
 //        try {
@@ -231,6 +311,7 @@ public class Find extends javax.swing.JFrame {
 //         
 //     }
 // 
+
      /**
      * @param args the command line arguments
      * @throws java.io.FileNotFoundException
@@ -243,6 +324,8 @@ public class Find extends javax.swing.JFrame {
          */
 
             try {
+            
+                
                 for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                     if ("Nimbus".equals(info.getName())) {
                         javax.swing.UIManager.setLookAndFeel(info.getClassName());
@@ -271,6 +354,7 @@ public class Find extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JComboBox<String> jComboBox1;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private com.toedter.calendar.JDateChooser jDateChooser2;
