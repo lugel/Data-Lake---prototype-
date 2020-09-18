@@ -31,11 +31,18 @@ import javax.swing.JOptionPane;
 public class Find extends javax.swing.JFrame {
 
     ArrayList<DanaPogodowa> records = new ArrayList<DanaPogodowa>();
+    double min=99999.99;
+    double max=-9999.99;
+   double avg=0.0;
+   int counter=0;
+   //wyzerowanie po odczycie !! 
+    
     Boolean  possibleSearch;
     public Find() {
         initComponents();
         blockDateInput();
         possibleSearch=true;
+        
     }
 
     /**
@@ -161,28 +168,26 @@ public class Find extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-void openCSV(String filename, int comboBoxChoice, int whatToDo) {
+void openCSV(String filename, int comboBoxChoice, int whatToDo ,Date dateStart , Date DateEnd) {
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader("jezioroDanych//" + filename));
-            DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+            DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+              SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
             String[] data = null;
             String line;
             reader.readLine();
-            reader.readLine();
-            double min=99999.99;
-            double max=-9999.99;
-            double avg=0.0;
-    
-            
+            reader.readLine();        
+         
             switch (whatToDo) {
                 case 0:
-                    int counter=0;
+                   
                     while ((line = reader.readLine()) != null) {
                         data = line.split(";");
                 
-                        if ((data[comboBoxChoice+2].isEmpty()) || (format.parse(data[0]).before(jDateChooser1.getDate()) &&
-                            format.parse(data[0]).after(jDateChooser2.getDate()))) {
+                 
+                        if ((data[comboBoxChoice+2].isEmpty()) || ((format.parse(data[0])).before(dateStart) ||
+                            (format.parse(data[0])).after(DateEnd))) {
                             continue;
                         }
 
@@ -190,11 +195,8 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
                         counter++;
                         
                     }
-                    avg/=counter;
-                    Frame frame1 = new Frame();
-                    JOptionPane.showMessageDialog(frame1, avg, "Średnia wartość",JOptionPane.PLAIN_MESSAGE);
+                   // avg/=counter; 
                     break;
-                    
                 case 1:
                     while ((line = reader.readLine()) != null) {
                         data = line.split(";");
@@ -209,10 +211,7 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
                         }
                         
                     }
-                    Frame frame2 = new Frame();
-                    JOptionPane.showMessageDialog(frame2, min, "Minimalna wartość",JOptionPane.PLAIN_MESSAGE);
-                    break;
-                    
+                     break;
                 case 2:
                     while ((line = reader.readLine()) != null) {
                         data = line.split(";");
@@ -227,9 +226,7 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
                         }
                         
                     }
-                    Frame frame3 = new Frame();
-                    JOptionPane.showMessageDialog(frame3, max, "Maksymalna wartość",JOptionPane.PLAIN_MESSAGE);
-                    break;
+                     break;
             }                
             reader.close();
        
@@ -307,6 +304,10 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+      
+        Date dateStartEntered = null;
+            Date dateEndEntered =  null; 
+        
         ArrayList<String> viableLines = new ArrayList<String>();
                      ArrayList <Date> dateRangeCheck = new ArrayList<Date>();
              ArrayList <Date> dateRangeFile = new ArrayList<Date>();
@@ -315,12 +316,20 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
         String[] data = null;
          SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         try {
-            Date dateStartEntered = jDateChooser1.getDate();
+             dateStartEntered = jDateChooser1.getDate();
             Date dateStartFile;
-            Date dateEndEntered =  sdf.parse(sdf.format(jDateChooser2.getDate())); 
+            dateEndEntered =  sdf.parse(sdf.format(jDateChooser2.getDate())); 
             Date dateEndFile;
            
             String locationEntered = jTextField3.getText();
+             if(locationEntered.length()==0) //jesli nie zostało wyczyszczone nie wykonujemy wyszukania 
+           {
+             
+               Frame frame = new Frame();
+               JOptionPane.showMessageDialog(frame, "Błędna lokalizacja.",
+                       "Komunikat",JOptionPane.WARNING_MESSAGE);
+               return;
+           }
             String locationFile;
             
             comboBoxChoice = jComboBox1.getSelectedIndex();
@@ -331,22 +340,6 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
             BufferedReader reader;
             reader = new BufferedReader(new FileReader("jezioroDanych//meta.txt"));
             String line;
-
-   
-        //    while ((line = reader.readLine()) != null) {
-        //        data = line.split(" ");
-        //        int numberSpace = line.split(" ").length; //liczenie spacji w lini
-        //        dateStartFile = dF.parse(data[numberSpace-3]); //uwzględniamy to że są spacje w nazwie pliku
-       //         dateEndFile = dF.parse(data[numberSpace-2]);
-       //         locationFile = data[numberSpace-1];    
-                
-        //        if ((dateStartFile.before(dateStartEntered) || dateStartFile.equals(dateStartEntered)) &&
-        //                (dateEndFile.after(dateEndEntered) || dateEndFile.equals(dateEndEntered)) &&
-        //                (locationFile.equals(locationEntered))) {
-         //               viableLines.add(line);
-         //       }             
-         //   }
-
              Calendar c = Calendar.getInstance();
             c.setTime(dateStartEntered);
 
@@ -355,7 +348,6 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
                   c.add(Calendar.DAY_OF_MONTH, 1); 
             };
 
-          
            while ((line = reader.readLine()) != null) {
               data = line.split(" ");
                 int numberSpace = line.split(" ").length; //liczenie spacji w lini
@@ -377,19 +369,13 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
                   dateRangeCheck.remove(j); //czyścimy dni które są w meta.txt
               } 
               //jak plik zawiera jakiś dzień to dodajemy go do listy 
-              if(dateRageFileSizeBeforeDelete != dateRangeCheck.size()){
+              if(dateRageFileSizeBeforeDelete != dateRangeCheck.size())
                viableLines.add(line);
-              }
-             
             }
                 dateRangeFile.clear();
            
            }
-         
-            
-            
-            
-            
+
             System.out.println(viableLines);
 //            if (viableLines.isEmpty()) {
 //                Frame frame = new Frame();
@@ -411,22 +397,42 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
                Frame frame = new Frame();
                JOptionPane.showMessageDialog(frame, "Brak danych dla\npodanego zakresu dat.",
                        "Komunikat",JOptionPane.WARNING_MESSAGE);
+               return;
            }
-
-        else
         for (String line : viableLines) {
+            
+              Date dateStartSearch=null; //uwzględniamy to że są spacje w nazwie pliku
+             Date  dateEndSearch=null;
+            
             data = line.split(" ");
             int numberSpace = line.split(" ").length; //liczenie spacji w lini
+               DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
             String type = data[numberSpace-4];
+            try {
+              dateStartSearch = dF.parse(data[numberSpace-3]); //uwzględniamy to że są spacje w nazwie pliku
+             dateEndSearch = dF.parse(data[numberSpace-2]);
+            } catch (ParseException ex) {
+                Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+            }
+          
             String fileName = line.substring(0, line.indexOf(type)-1);
             fileName += "." + type;
+            
+            //jakich dat szuakmy w danym pliku
+            
+            if(dateStartSearch.before(dateStartEntered ))
+            dateStartSearch=dateStartEntered;
+             if(dateEndSearch.after(dateEndEntered ))
+            dateEndSearch=dateEndEntered;
             
             System.out.println(fileName);
             System.out.println(comboBoxChoice);
             System.out.println(whatToDo);
+             System.out.println(dateStartSearch);
+            System.out.println(dateEndSearch);
             
             if (type.equals("csv")) {
-                openCSV(fileName, comboBoxChoice, whatToDo);
+                openCSV(fileName, comboBoxChoice, whatToDo,dateStartSearch, dateEndSearch);        
             } else if (type.equals("txt")) {
                 
             } else if (type.equals("xml")) {
@@ -444,6 +450,23 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
         }
             }
         }
+        //wyświetlamy wynik
+                Frame frame = new Frame();
+                 switch (whatToDo) {
+                case 0:
+                    JOptionPane.showMessageDialog(frame, avg/=counter, "Średnia wartość",JOptionPane.PLAIN_MESSAGE);
+                    break;
+                case 1:
+                    JOptionPane.showMessageDialog(frame, min, "Minimalna wartość",JOptionPane.PLAIN_MESSAGE);
+                    break;  
+                case 2:
+                    JOptionPane.showMessageDialog(frame, max, "Maksymalna wartość",JOptionPane.PLAIN_MESSAGE);
+                    break;
+            }    
+    min=99999.99;
+    max=-9999.99;
+    avg=0.0;
+    counter=0;
     }//GEN-LAST:event_jButton1ActionPerformed
 
 
