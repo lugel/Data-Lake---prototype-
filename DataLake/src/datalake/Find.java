@@ -23,6 +23,14 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -214,6 +222,87 @@ public class Find extends javax.swing.JFrame {
     }
     
     
+  void openXML(String filename, int comboBoxChoice, int whatToDo ,Date dateStart , Date DateEnd) throws ParserConfigurationException, SAXException {
+        BufferedReader reader;
+        try {
+            File file = new File("jezioroDanych//" + filename);  
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();  
+            DocumentBuilder db = dbf.newDocumentBuilder();  
+        Document doc = db.parse(file);  
+        doc.getDocumentElement().normalize();  
+            NodeList nodeList = doc.getElementsByTagName("Pogoda");  
+            for (int itr = 0; itr < nodeList.getLength(); itr++)   
+{  
+Node node = nodeList.item(itr);  
+System.out.println("\nNode Name :" + node.getNodeName());  
+if (node.getNodeType() == Node.ELEMENT_NODE)   
+{  
+Element eElement = (Element) node;  
+System.out.println("Data "+ eElement.getAttribute("Data")); 
+System.out.println("TemperaturaZamierzonaDzwiekiem "+ eElement.getElementsByTagName("TemperaturaZamierzonaDzwiekiem").item(0).getTextContent());  
+System.out.println("CisnienieAtmosferyczne "+ eElement.getElementsByTagName("CisnienieAtmosferyczne").item(0).getTextContent());  
+System.out.println("Temperatura "+ eElement.getElementsByTagName("Temperatura").item(0).getTextContent());  
+System.out.println("Wilgotnosc "+ eElement.getElementsByTagName("Wilgotnosc").item(0).getTextContent());  
+}  
+}     
+            
+            
+            reader = new BufferedReader(new FileReader("jezioroDanych//" + filename));
+            DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+            String[] data = null;
+            String line;
+            reader.readLine();
+            reader.readLine();        
+         
+            switch (whatToDo) {
+                case 0:
+                    while ((line = reader.readLine()) != null) {
+                        data = line.split(";");
+                        if ((data[comboBoxChoice+2].isEmpty()) || ((format.parse(data[0])).before(dateStart) ||
+                            (format.parse(data[0])).after(DateEnd))) {
+                            continue;
+                        }
+                        avg+= Double.parseDouble(data[comboBoxChoice+2].trim());
+                        counter++;   
+                    }
+                    break;
+                case 1:
+                    while ((line = reader.readLine()) != null) {
+                        data = line.split(";");
+                        if ((data[comboBoxChoice+2].isEmpty()) || ((format.parse(data[0])).before(dateStart) ||
+                            (format.parse(data[0])).after(DateEnd))) {
+                            continue;
+                        }
+                        if (Double.parseDouble(data[comboBoxChoice+2]) < min) {
+                            min = Double.parseDouble(data[comboBoxChoice+2]);
+                        }
+                    }
+                     break;
+                case 2:
+                    while ((line = reader.readLine()) != null) {
+                        data = line.split(";");
+                
+                        if ((data[comboBoxChoice+2].isEmpty()) || ((format.parse(data[0])).before(dateStart) ||
+                            (format.parse(data[0])).after(DateEnd))) {
+                            continue;
+                        }
+                        if (Double.parseDouble(data[comboBoxChoice+2]) > max) {
+                            max = Double.parseDouble(data[comboBoxChoice+2]);
+                        }
+                    }
+                     break;
+            }                
+            reader.close();
+       
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+        }  
+    }
+    
     private void jDateChooser1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jDateChooser1PropertyChange
         // TODO add your handling code here:
         if ("date".equals(evt.getPropertyName())) {
@@ -356,7 +445,13 @@ public class Find extends javax.swing.JFrame {
             } else if (type.equals("txt")) {
                  openCSVandTXT(fileName, comboBoxChoice, whatToDo,dateStartSearch, dateEndSearch);     
             } else if (type.equals("xml")) {
-                
+                  try {     
+                      openXML(fileName, comboBoxChoice, whatToDo,dateStartSearch, dateEndSearch);
+                  } catch (ParserConfigurationException ex) {
+                      Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+                  } catch (SAXException ex) {
+                      Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+                  }
             } else if (type.equals("bmp")) {
                 
             } else {
