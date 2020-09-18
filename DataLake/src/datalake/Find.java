@@ -308,13 +308,16 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         ArrayList<String> viableLines = new ArrayList<String>();
+                     ArrayList <Date> dateRangeCheck = new ArrayList<Date>();
+             ArrayList <Date> dateRangeFile = new ArrayList<Date>();
         int comboBoxChoice = 0;
         int whatToDo = 0;
         String[] data = null;
+         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         try {
             Date dateStartEntered = jDateChooser1.getDate();
             Date dateStartFile;
-            Date dateEndEntered = jDateChooser2.getDate();
+            Date dateEndEntered =  sdf.parse(sdf.format(jDateChooser2.getDate())); 
             Date dateEndFile;
            
             String locationEntered = jTextField3.getText();
@@ -329,26 +332,63 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
             reader = new BufferedReader(new FileReader("jezioroDanych//meta.txt"));
             String line;
 
-            dateEndEntered.setHours(0);
-            dateEndEntered.setMinutes(0);
-            dateEndEntered.setSeconds(0);
-            dateEndEntered.setTime(0);
-
+   
+        //    while ((line = reader.readLine()) != null) {
+        //        data = line.split(" ");
+        //        int numberSpace = line.split(" ").length; //liczenie spacji w lini
+        //        dateStartFile = dF.parse(data[numberSpace-3]); //uwzględniamy to że są spacje w nazwie pliku
+       //         dateEndFile = dF.parse(data[numberSpace-2]);
+       //         locationFile = data[numberSpace-1];    
                 
-            while ((line = reader.readLine()) != null) {
-                data = line.split(" ");
+        //        if ((dateStartFile.before(dateStartEntered) || dateStartFile.equals(dateStartEntered)) &&
+        //                (dateEndFile.after(dateEndEntered) || dateEndFile.equals(dateEndEntered)) &&
+        //                (locationFile.equals(locationEntered))) {
+         //               viableLines.add(line);
+         //       }             
+         //   }
+
+             Calendar c = Calendar.getInstance();
+            c.setTime(dateStartEntered);
+
+            while(!(c.getTime().after(dateEndEntered))){
+                dateRangeCheck.add(c.getTime());
+                  c.add(Calendar.DAY_OF_MONTH, 1); 
+            };
+
+          
+           while ((line = reader.readLine()) != null) {
+              data = line.split(" ");
                 int numberSpace = line.split(" ").length; //liczenie spacji w lini
-                dateStartFile = dF.parse(data[numberSpace-3]); //uwzględniamy to że są spacje w nazwie pliku
+            dateStartFile = dF.parse(data[numberSpace-3]); //uwzględniamy to że są spacje w nazwie pliku
                 dateEndFile = dF.parse(data[numberSpace-2]);
                 locationFile = data[numberSpace-1];    
-                
-                if ((dateStartFile.before(dateStartEntered) || dateStartFile.equals(dateStartEntered)) &&
-                        (dateEndFile.after(dateEndEntered) || dateEndFile.equals(dateEndEntered)) &&
-                        (locationFile.equals(locationEntered))) {
-                        viableLines.add(line);
-                }             
+
+             if  ( locationEntered.equals(locationFile)) {   
+                 c.setTime(dateStartFile);
+              while(!(c.getTime().after( dateEndFile))){
+                dateRangeFile.add(c.getTime());
+                  c.add(Calendar.DAY_OF_MONTH, 1); 
+              }
+                int dateRageFileSizeBeforeDelete = dateRangeCheck.size();
+              for (int i=0; i< dateRangeFile.size();i++)
+                    for(int j=0;j<dateRangeCheck.size();j++)
+              {
+                  if(dateRangeCheck.get(j).equals(dateRangeFile.get(i)))
+                  dateRangeCheck.remove(j); //czyścimy dni które są w meta.txt
+              } 
+              //jak plik zawiera jakiś dzień to dodajemy go do listy 
+              if(dateRageFileSizeBeforeDelete != dateRangeCheck.size()){
+               viableLines.add(line);
+              }
+             
             }
-        
+                dateRangeFile.clear();
+           
+           }
+         
+            
+            
+            
             
             System.out.println(viableLines);
 //            if (viableLines.isEmpty()) {
@@ -365,7 +405,15 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        
+        if(dateRangeCheck.isEmpty()!=true) //jesli nie zostało wyczyszczone nie wykonujemy wyszukania 
+           {
+               possibleSearch=false;
+               Frame frame = new Frame();
+               JOptionPane.showMessageDialog(frame, "Brak danych dla\npodanego zakresu dat.",
+                       "Komunikat",JOptionPane.WARNING_MESSAGE);
+           }
+
+        else
         for (String line : viableLines) {
             data = line.split(" ");
             int numberSpace = line.split(" ").length; //liczenie spacji w lini
@@ -386,9 +434,14 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo) {
             } else if (type.equals("bmp")) {
                 
             } else {
-                Frame frame = new Frame();
-                JOptionPane.showMessageDialog(frame, "Nie obsługiwany format!",
-                       "Komunikat",JOptionPane.WARNING_MESSAGE);
+                   File file = new File("jezioroDanych//"+fileName);
+        Desktop desktop = Desktop.getDesktop();
+        if(file.exists()) try {
+            desktop.open(file);
+
+        } catch (IOException ex) {
+            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+        }
             }
         }
     }//GEN-LAST:event_jButton1ActionPerformed

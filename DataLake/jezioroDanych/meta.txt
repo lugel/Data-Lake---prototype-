@@ -14,4 +14,6 @@ Nowy dokument tekstowy — kopia — kopia (2) — kopia txt 13-09-2020 16-09-20
 Nowy dokument tekstowy — kopia — kopia (3) txt 01-09-2020 01-09-2020 Pol
 Nowy dokument tekstowy — kopia (4) txt 13-09-2020 27-09-2020 Koziegłów
 Nowy dokument tekstowy — kopia (4) txt 06-09-2020 12-09-2020 Koziegłów
-data08-2020 csv 01-08-2020 31-08-2020 Poznań
+data08-2020 csv 16-08-2020 31-08-2020 Poznań
+Nowy dokument tekstowy — kopia — kopia — kopia (3) txt 19-09-2020 27-09-2020 Polkk
+data08-2020_1 csv 25-07-2020 15-08-2020 Poznań
