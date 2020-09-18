@@ -30,13 +30,11 @@ import javax.swing.JOptionPane;
  */
 public class Find extends javax.swing.JFrame {
 
-    ArrayList<DanaPogodowa> records = new ArrayList<DanaPogodowa>();
-    double min=99999.99;
+   double min=99999.99;
     double max=-9999.99;
    double avg=0.0;
    int counter=0;
-   //wyzerowanie po odczycie !! 
-    
+   
     Boolean  possibleSearch;
     public Find() {
         initComponents();
@@ -63,7 +61,6 @@ public class Find extends javax.swing.JFrame {
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jDateChooser2 = new com.toedter.calendar.JDateChooser();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jComboBox2 = new javax.swing.JComboBox<>();
 
@@ -96,13 +93,6 @@ public class Find extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("otwórz plik");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
         jLabel4.setText("Szukana wartość");
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Średnia", "Min", "Max" }));
@@ -129,9 +119,7 @@ public class Find extends javax.swing.JFrame {
                             .addComponent(jDateChooser2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addComponent(jButton2)
-                        .addGap(52, 52, 52)
+                        .addGap(164, 164, 164)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -159,16 +147,14 @@ public class Find extends javax.swing.JFrame {
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2))
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-void openCSV(String filename, int comboBoxChoice, int whatToDo ,Date dateStart , Date DateEnd) {
+    void openCSVandTXT(String filename, int comboBoxChoice, int whatToDo ,Date dateStart , Date DateEnd) {
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader("jezioroDanych//" + filename));
@@ -180,35 +166,26 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo ,Date dateStart ,
          
             switch (whatToDo) {
                 case 0:
-                   
                     while ((line = reader.readLine()) != null) {
                         data = line.split(";");
-                
-                 
                         if ((data[comboBoxChoice+2].isEmpty()) || ((format.parse(data[0])).before(dateStart) ||
                             (format.parse(data[0])).after(DateEnd))) {
                             continue;
                         }
-
                         avg+= Double.parseDouble(data[comboBoxChoice+2].trim());
-                        counter++;
-                        
+                        counter++;   
                     }
-                   // avg/=counter; 
                     break;
                 case 1:
                     while ((line = reader.readLine()) != null) {
                         data = line.split(";");
-                
                         if ((data[comboBoxChoice+2].isEmpty()) || ((format.parse(data[0])).before(dateStart) ||
                             (format.parse(data[0])).after(DateEnd))) {
                             continue;
                         }
-                        
                         if (Double.parseDouble(data[comboBoxChoice+2]) < min) {
                             min = Double.parseDouble(data[comboBoxChoice+2]);
                         }
-                        
                     }
                      break;
                 case 2:
@@ -219,11 +196,9 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo ,Date dateStart ,
                             (format.parse(data[0])).after(DateEnd))) {
                             continue;
                         }
-                        
                         if (Double.parseDouble(data[comboBoxChoice+2]) > max) {
                             max = Double.parseDouble(data[comboBoxChoice+2]);
                         }
-                        
                     }
                      break;
             }                
@@ -238,6 +213,7 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo ,Date dateStart ,
         }  
     }
     
+    
     private void jDateChooser1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jDateChooser1PropertyChange
         // TODO add your handling code here:
         if ("date".equals(evt.getPropertyName())) {
@@ -248,59 +224,6 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo ,Date dateStart ,
         }
     }//GEN-LAST:event_jDateChooser1PropertyChange
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        
-        //otwieranie pliku
-        File file = new File("jezioroDanych//bitmapaTEST.bmp");
-        Desktop desktop = Desktop.getDesktop();
-        if(file.exists()) try {
-            desktop.open(file);
-            
-            //otwieranie pliku
-            
-            
-        } catch (IOException ex) {
-            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-        }
-              
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    
-    public static void readData() throws FileNotFoundException, IOException, ParseException
-    { 
-         Date dateStart, dateEnd;
-           DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-          Date dateStartChoose = jDateChooser1.getDate();
-             Date dateEndChoose = sdf.parse(sdf.format(jDateChooser2.getDate()));
-        
-        String[] data = null;
-            BufferedReader reader;
-             reader = new BufferedReader(new FileReader("jezioroDanych//meta.txt"));
-               String line;
-           while ((line = reader.readLine()) != null) {  //czytanue 
-              data = line.split(" ");
-                int numberSpace = line.split(" ").length; 
-                 dateStart = dF.parse(data[numberSpace-3]); //uwzględniamy to że są spacje w nazwie pliku
-             dateEnd = dF.parse(data[numberSpace-2]);
-             
-             //jeżeli nazwa się zgadza porównujemy daty
-             if(jTextField3.getText().equals(data[numberSpace-1])){
-             
-               if((dateStartChoose.before(dateStart) || dateStartChoose.equals(dateStart))  
-            && (dateEndChoose.after(dateEnd) || dateEndChoose.equals(dateEnd)))
-             
-             
-             
-             System.out.println("");
-             
-             
-             
-           }
-    }
-    }
-    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
       
@@ -321,12 +244,10 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo ,Date dateStart ,
             Date dateEndFile;
            
             String locationEntered = jTextField3.getText();
-             if(locationEntered.length()==0) //jesli nie zostało wyczyszczone nie wykonujemy wyszukania 
+             if(locationEntered.length()==0) //błędna lokalizacja
            {
-             
                Frame frame = new Frame();
-               JOptionPane.showMessageDialog(frame, "Błędna lokalizacja.",
-                       "Komunikat",JOptionPane.WARNING_MESSAGE);
+               JOptionPane.showMessageDialog(frame, "Błędna lokalizacja.", "Komunikat",JOptionPane.WARNING_MESSAGE);
                return;
            }
             String locationFile;
@@ -431,9 +352,9 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo ,Date dateStart ,
             System.out.println(dateEndSearch);
             
             if (type.equals("csv")) {
-                openCSV(fileName, comboBoxChoice, whatToDo,dateStartSearch, dateEndSearch);        
+                openCSVandTXT(fileName, comboBoxChoice, whatToDo,dateStartSearch, dateEndSearch);        
             } else if (type.equals("txt")) {
-                
+                 openCSVandTXT(fileName, comboBoxChoice, whatToDo,dateStartSearch, dateEndSearch);     
             } else if (type.equals("xml")) {
                 
             } else if (type.equals("bmp")) {
@@ -469,7 +390,7 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo ,Date dateStart ,
     }//GEN-LAST:event_jButton1ActionPerformed
 
 
-  public static void   blockDateInput()
+  public static void blockDateInput()
   {
       JTextFieldDateEditor editor = (JTextFieldDateEditor) jDateChooser1.getDateEditor();
             editor.setEditable(false);
@@ -516,107 +437,9 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo ,Date dateStart ,
     
         
     }
-    //     public  void załadujDane(String plik) throws FileNotFoundException {
-//             BufferedReader reader;
-//        try {
-//          //  ArrayList records = new ArrayList<DanaPogodowa> ();
-//            reader = new BufferedReader(new FileReader(plik));
-//            DateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH);
-//            String[] data = null;
-//            String line;
-//            reader.readLine();
-//            reader.readLine();
-//            while ((line = reader.readLine()) != null) {
-//                //  records.add(line);
-//                data = line.split(";");
-//
-//                DanaPogodowa pogoda = new DanaPogodowa();
-//                pogoda.data= format.parse(data[0]);
-//              
-//                if(!data[2].isEmpty())
-//                pogoda.predkoscDzwieku = Double.parseDouble(data[2]);
-//                records.add(pogoda);
-//            }
-//            reader.close();
-//            //testy
-//            jTextField1.setText(String.valueOf(records.size()));
-//            DanaPogodowa pogoda = new DanaPogodowa();
-//            pogoda = (DanaPogodowa) records.get(1);
-//            jTextField2.setText( String.valueOf( pogoda.predkoscDzwieku));
-//              
-//            String pattern = "MM-dd-yyyy";
-//
-//            DateFormat df = new SimpleDateFormat(pattern);
-//
-//            String todayAsString = df.format(pogoda.data);
-//            
-//            jTextField3.setText( todayAsString);
-//                
-//        }
-//
-//        catch (FileNotFoundException ex) {
-//            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (IOException ex) {
-//            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (ParseException ex) {
-//            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//         
-//     }
-// 
-    
-    //--- BUTTON1 --- ZAŁADUJ DANE KOD ----
-//        BufferedReader reader;
-        //        try {
-            //          //  ArrayList records = new ArrayList<DanaPogodowa> ();
-            //            reader = new BufferedReader(new FileReader("jezioroDanych//data08-2020.csv"));
-            //            DateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH);
-            //            String[] data = null;
-            //            String line;
-            //            reader.readLine();
-            //            reader.readLine();
-            //            while ((line = reader.readLine()) != null) {
-                //                //  records.add(line);
-                //                data = line.split(";");
-                //
-                //                DanaPogodowa pogoda = new DanaPogodowa();
-                //                pogoda.data= format.parse(data[0]);
-                //
-                //                if(!data[2].isEmpty())
-                //                pogoda.predkoscDzwieku = Double.parseDouble(data[2]);
-                //                records.add(pogoda);
-                //            }
-            //            reader.close();
-            //            //testy
-            //            jTextField1.setText(String.valueOf(records.size()));
-            //            DanaPogodowa pogoda = new DanaPogodowa();
-            //            pogoda = (DanaPogodowa) records.get(1);
-            //            jTextField2.setText( String.valueOf( pogoda.predkoscDzwieku));
-            //
-            //            String pattern = "dd-MM-yyyy";
-            //
-            //            DateFormat df = new SimpleDateFormat(pattern);
-            //
-            //            String todayAsString = df.format(pogoda.data);
-            //
-            //            jTextField3.setText( todayAsString);
-            //
-            //            records.clear();
-            //        }
-        //
-        //        catch (FileNotFoundException ex) {
-            //            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-            //        } catch (IOException ex) {
-            //            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-            //        } catch (ParseException ex) {
-            //            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-            //        }  
-    
-    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private static com.toedter.calendar.JDateChooser jDateChooser1;
