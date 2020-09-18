@@ -222,8 +222,12 @@ public class Find extends javax.swing.JFrame {
     }
     
     
-  void openXML(String filename, int comboBoxChoice, int whatToDo ,Date dateStart , Date DateEnd) throws ParserConfigurationException, SAXException {
-        BufferedReader reader;
+  void openXML(String filename, int comboBoxChoice, int whatToDo ,Date dateStart , Date DateEnd) throws ParserConfigurationException, SAXException, ParseException, IOException {
+        
+        String parameters[] = {"PredkoscDzwieku","TemperaturaZamierzonaDzwiekiem",
+            "CisnienieAtmosferyczne","Temperatura","Wilgotnosc","WskazanieKompasu","PrędkoscU-V","PrędkoscWiatru",
+            "KierunekWiatru","Wysokosc","TemperaturaWewnatrzPomieszczenia"};
+        
         try {
             File file = new File("jezioroDanych//" + filename);  
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();  
@@ -231,78 +235,65 @@ public class Find extends javax.swing.JFrame {
         Document doc = db.parse(file);  
         doc.getDocumentElement().normalize();  
             NodeList nodeList = doc.getElementsByTagName("Pogoda");  
-            for (int itr = 0; itr < nodeList.getLength(); itr++)   
-{  
-Node node = nodeList.item(itr);  
-System.out.println("\nNode Name :" + node.getNodeName());  
-if (node.getNodeType() == Node.ELEMENT_NODE)   
-{  
-Element eElement = (Element) node;  
-System.out.println("Data "+ eElement.getAttribute("Data")); 
-System.out.println("TemperaturaZamierzonaDzwiekiem "+ eElement.getElementsByTagName("TemperaturaZamierzonaDzwiekiem").item(0).getTextContent());  
-System.out.println("CisnienieAtmosferyczne "+ eElement.getElementsByTagName("CisnienieAtmosferyczne").item(0).getTextContent());  
-System.out.println("Temperatura "+ eElement.getElementsByTagName("Temperatura").item(0).getTextContent());  
-System.out.println("Wilgotnosc "+ eElement.getElementsByTagName("Wilgotnosc").item(0).getTextContent());  
-}  
-}     
-            
-            
-            reader = new BufferedReader(new FileReader("jezioroDanych//" + filename));
+
             DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-            String[] data = null;
-            String line;
-            reader.readLine();
-            reader.readLine();        
-         
+      
             switch (whatToDo) {
                 case 0:
-                    while ((line = reader.readLine()) != null) {
-                        data = line.split(";");
-                        if ((data[comboBoxChoice+2].isEmpty()) || ((format.parse(data[0])).before(dateStart) ||
-                            (format.parse(data[0])).after(DateEnd))) {
-                            continue;
-                        }
-                        avg+= Double.parseDouble(data[comboBoxChoice+2].trim());
+                       for (int itr = 0; itr < nodeList.getLength(); itr++)   {  
+                         Node node = nodeList.item(itr);  
+                    if (node.getNodeType() == Node.ELEMENT_NODE)   { 
+                    Element eElement = (Element) node;  
+                    Date date =  format.parse(eElement.getAttribute("Data"));
+                    if (eElement.getElementsByTagName(parameters[comboBoxChoice]).item(0).getTextContent().isEmpty()
+                            || date.before(dateStart) ||  date.after(DateEnd))
+                        continue;  
+                        avg+= Double.parseDouble(eElement.getElementsByTagName(parameters[comboBoxChoice]).item(0).getTextContent().trim());
                         counter++;   
                     }
+            }
                     break;
                 case 1:
-                    while ((line = reader.readLine()) != null) {
-                        data = line.split(";");
-                        if ((data[comboBoxChoice+2].isEmpty()) || ((format.parse(data[0])).before(dateStart) ||
-                            (format.parse(data[0])).after(DateEnd))) {
+                       for (int itr = 0; itr < nodeList.getLength(); itr++)    {  
+                        Node node = nodeList.item(itr);    
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {  
+                    Element eElement = (Element) node;  
+                    Date date =  format.parse(eElement.getAttribute("Data"));
+
+                    if (eElement.getElementsByTagName(parameters[comboBoxChoice]).item(0).getTextContent().isEmpty()
+                                || date.before(dateStart) ||  date.after(DateEnd)) 
                             continue;
+                        if (Double.parseDouble(eElement.getElementsByTagName(parameters[comboBoxChoice]).item(0).getTextContent()) < min) {
+                            min = Double.parseDouble(eElement.getElementsByTagName(parameters[comboBoxChoice]).item(0).getTextContent());
                         }
-                        if (Double.parseDouble(data[comboBoxChoice+2]) < min) {
-                            min = Double.parseDouble(data[comboBoxChoice+2]);
-                        }
+                    }
                     }
                      break;
                 case 2:
-                    while ((line = reader.readLine()) != null) {
-                        data = line.split(";");
-                
-                        if ((data[comboBoxChoice+2].isEmpty()) || ((format.parse(data[0])).before(dateStart) ||
-                            (format.parse(data[0])).after(DateEnd))) {
-                            continue;
-                        }
-                        if (Double.parseDouble(data[comboBoxChoice+2]) > max) {
-                            max = Double.parseDouble(data[comboBoxChoice+2]);
+                      for (int itr = 0; itr < nodeList.getLength(); itr++)   {  
+                        Node node = nodeList.item(itr);  
+                     if (node.getNodeType() == Node.ELEMENT_NODE)   { 
+                    Element eElement = (Element) node;  
+                    Date date =  format.parse(eElement.getAttribute("Data"));
+                    if (eElement.getElementsByTagName(parameters[comboBoxChoice]).item(0).getTextContent().isEmpty()
+                            || date.before(dateStart) ||  date.after(DateEnd))
+                        continue;  
+                        if (Double.parseDouble(eElement.getElementsByTagName(parameters[comboBoxChoice]).item(0).getTextContent()) > max) {
+                            max = Double.parseDouble(eElement.getElementsByTagName(parameters[comboBoxChoice]).item(0).getTextContent());
                         }
                     }
+            }
                      break;
             }                
-            reader.close();
-       
+         
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParseException ex) {
+        } catch (IOException | ParseException ex) {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
         }  
-    }
-    
+}
+  
+  
     private void jDateChooser1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jDateChooser1PropertyChange
         // TODO add your handling code here:
         if ("date".equals(evt.getPropertyName())) {
@@ -447,9 +438,7 @@ System.out.println("Wilgotnosc "+ eElement.getElementsByTagName("Wilgotnosc").it
             } else if (type.equals("xml")) {
                   try {     
                       openXML(fileName, comboBoxChoice, whatToDo,dateStartSearch, dateEndSearch);
-                  } catch (ParserConfigurationException ex) {
-                      Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-                  } catch (SAXException ex) {
+                  } catch (ParserConfigurationException | SAXException | ParseException | IOException ex) {
                       Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
                   }
             } else if (type.equals("bmp")) {
