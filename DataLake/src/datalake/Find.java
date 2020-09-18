@@ -173,7 +173,6 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo ,Date dateStart ,
         try {
             reader = new BufferedReader(new FileReader("jezioroDanych//" + filename));
             DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-              SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
             String[] data = null;
             String line;
             reader.readLine();
@@ -201,8 +200,8 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo ,Date dateStart ,
                     while ((line = reader.readLine()) != null) {
                         data = line.split(";");
                 
-                        if ((data[comboBoxChoice+2].isEmpty()) || (format.parse(data[0]).before(jDateChooser1.getDate()) &&
-                            format.parse(data[0]).after(jDateChooser2.getDate()))) {
+                        if ((data[comboBoxChoice+2].isEmpty()) || ((format.parse(data[0])).before(dateStart) ||
+                            (format.parse(data[0])).after(DateEnd))) {
                             continue;
                         }
                         
@@ -216,8 +215,8 @@ void openCSV(String filename, int comboBoxChoice, int whatToDo ,Date dateStart ,
                     while ((line = reader.readLine()) != null) {
                         data = line.split(";");
                 
-                        if ((data[comboBoxChoice+2].isEmpty()) || (format.parse(data[0]).before(jDateChooser1.getDate()) &&
-                            format.parse(data[0]).after(jDateChooser2.getDate()))) {
+                        if ((data[comboBoxChoice+2].isEmpty()) || ((format.parse(data[0])).before(dateStart) ||
+                            (format.parse(data[0])).after(DateEnd))) {
                             continue;
                         }
                         
