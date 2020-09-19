@@ -16,6 +16,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,16 +37,20 @@ public class Add extends javax.swing.JFrame {
      * Creates new form Add
      * @param fN
      */
-    public Add(String fN) {
+    public Add(String fN,Path fileSource,Path destination) {
         initComponents();
         fileName = fN;
          blockDateInput();
+         source=fileSource;
+         dest = destination;
     }
      Date dateStart;
-             Date dateEnd ;
-            String localization;
-            Boolean duplicateData = false;
-    String fileName;
+     Date dateEnd ;
+     String localization;
+     Boolean duplicateData = false;
+     String fileName;
+     Path source;
+     Path dest;
     
     NewFile newFile = new NewFile();
 
@@ -159,6 +165,9 @@ public class Add extends javax.swing.JFrame {
             output.write(newFile.name + " " + newFile.type + " " + dateToFileStart + " " + dateToFileEnd + " " + newFile.localization + "\n");
            
               output.close();
+              
+              Files.move(source, dest);
+              
             }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
@@ -193,8 +202,7 @@ public class Add extends javax.swing.JFrame {
     }//GEN-LAST:event_jDateChooser1PropertyChange
 
     public Boolean checkDoubleInfo(Date dateStartUser , Date dateEndUser, String localizationUser) 
-            throws FileNotFoundException, IOException, ParseException
-    {
+            throws FileNotFoundException, IOException, ParseException{
       
         int result=1;
         int rowNumber=1;
@@ -258,8 +266,7 @@ else
               return  true;
     }                                                       //od usera te daty
     //ustawienie gdy zakrres nowy wchodzi w zakres obecny np (2.10-3.10)-> (1.10-4.10) 
-     public static void changeDateinMetaFile(int rowNumber, Date endDateNew , Date startDateNew) throws IOException
-    {
+     public static void changeDateinMetaFile(int rowNumber, Date endDateNew , Date startDateNew) throws IOException {
         
         Calendar c = Calendar.getInstance();
         c.setTime(endDateNew);
@@ -342,8 +349,7 @@ else
     }
     
      // sytuacja gdy nowy (2.10-4.10)-> obecny: (3.10-6.10)
-     public static void changeStartDateinMetaFile(int rowNumber, Date endDateNew) throws IOException
-    {
+     public static void changeStartDateinMetaFile(int rowNumber, Date endDateNew) throws IOException{
         
         //dateEndUser o 1 dzień do przodu
         Calendar c = Calendar.getInstance();
@@ -409,8 +415,7 @@ else
         
     }
        // sytuacja gdy nowy (2.10-4.10)-> obecny: (1.10-3.10)
-      public static void changeEndDateinMetaFile(int rowNumber, Date startDateNew) throws IOException
-    {
+      public static void changeEndDateinMetaFile(int rowNumber, Date startDateNew) throws IOException{
         
         //dateStartUser o 1 dzień do tyłu
         Calendar c = Calendar.getInstance();
@@ -479,11 +484,11 @@ else
 
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException
      */
          // sytuacja gdy nowy (2.10-7.10)-> obecny: (3.10-4.10) 
       //uwzględniamy też : (2.10-7.10)-> obecny: (3.10-7.10)
-    public static void deleteLine(int rowNumber) throws IOException
-    {
+    public static void deleteLine(int rowNumber) throws IOException{
        String tempFile = "jezioroDanych//metaCopy.txt";
        String originalFile = "jezioroDanych//meta.txt";
        
@@ -523,8 +528,7 @@ else
         
         
     }
-  public static void   blockDateInput()
-  {
+  public static void   blockDateInput() {
       JTextFieldDateEditor editor = (JTextFieldDateEditor) jDateChooser1.getDateEditor();
             editor.setEditable(false);
       editor = (JTextFieldDateEditor) jDateChooser2.getDateEditor();
@@ -544,21 +548,17 @@ else
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Add.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Add.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Add.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Add.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Add("").setVisible(true);
+               // new Add("").setVisible(true);
                
             }
         });

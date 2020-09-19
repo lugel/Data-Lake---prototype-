@@ -19,3 +19,4 @@ data08-2020_1 csv 25-07-2020 31-07-2020 Poznań
 docos 123123123— kopia xml 03-09-2020 03-09-2020 Poznań
 docos 123123123— kopia xml 01-09-2020 02-09-2020 Poznań
 csvjson — kopia json 01-08-2020 31-08-2020 Poznań
+Nowy dokument tekstowy — kopia — kopia — kopia — kopia txt 04-09-2021 18-09-2021 Kraków
