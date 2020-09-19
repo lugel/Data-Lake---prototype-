@@ -146,10 +146,15 @@ public class Add extends javax.swing.JFrame {
         if(jDateChooser2.getDate()!=null && jDateChooser1.getDate()!=null)
         if(jTextField5.getText().length()>0) {//isnieje miasto Y i A 
         try {
+          
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-         
-            newFile.name = fileName.split("\\.")[0];
+                 
+        newFile.name = fileName.split("\\.")[0];
+      if( fileName.indexOf("\\.")!=-1)
             newFile.type = fileName.split("\\.")[1];
+      else
+          newFile.type="";
+
             newFile.dateStart = jDateChooser1.getDate();
             newFile.dateEnd =   sdf.parse(sdf.format(jDateChooser2.getDate())); //pobierało godzinę nie wiem czemu
             newFile.localization = jTextField5.getText();
@@ -157,7 +162,9 @@ public class Add extends javax.swing.JFrame {
            duplicateData= checkDoubleInfo(newFile.dateStart,newFile.dateEnd,newFile.localization);
             
             if(duplicateData == true)
-            {  DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
+            { 
+                Files.move(source, dest);
+                DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
                String dateToFileStart = dF.format(newFile.dateStart);
                String dateToFileEnd = dF.format(newFile.dateEnd);
                   Writer output;
@@ -166,19 +173,23 @@ public class Add extends javax.swing.JFrame {
            
               output.close();
               
-              Files.move(source, dest);
+              
               
             }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (FileNotFoundException ex ) {
+             Frame frame = new Frame();
+               JOptionPane.showMessageDialog(frame, "Nie znaleziono pliku.",
+                       "Komunikat",JOptionPane.ERROR_MESSAGE);   
         } catch (IOException ex) {
-            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+            Frame frame = new Frame();
+               JOptionPane.showMessageDialog(frame, "Problem z przeniesieniem pliku.",
+                       "Komunikat",JOptionPane.ERROR_MESSAGE);   
         } catch (ParseException ex) {
             Logger.getLogger(Add.class.getName()).log(Level.SEVERE, null, ex);
         }
         }
         else{
-           Frame frame = new Frame();
+             Frame frame = new Frame();
                JOptionPane.showMessageDialog(frame, "Za krótka nazwa lokalizacji.",
                        "Komunikat",JOptionPane.ERROR_MESSAGE);   
         }

@@ -396,7 +396,7 @@ void openJSON(String filename, int comboBoxChoice, int whatToDo ,Date dateStart 
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-      
+      Boolean showResults=true;
         Date dateStartEntered = null;
             Date dateEndEntered =  null; 
         
@@ -505,8 +505,17 @@ void openJSON(String filename, int comboBoxChoice, int whatToDo ,Date dateStart 
                 Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
             }
           
+
+            
+            //uwzględnienie pliku bez rozszerzenia
             String fileName = line.substring(0, line.lastIndexOf(type)-1);
-            fileName += "." + type;
+              if( !type.equals(""))
+           fileName += "." + type;
+          else
+          fileName=fileName.substring(0, line.lastIndexOf(dF.format(dateStartSearch))-2);
+            
+            
+          //  fileName += "." + type;
                       System.out.println(fileName);
             System.out.println(comboBoxChoice);
             System.out.println(whatToDo);
@@ -542,19 +551,21 @@ void openJSON(String filename, int comboBoxChoice, int whatToDo ,Date dateStart 
                       Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
                   }
             } else {
+                showResults=false;
                    File file = new File("jezioroDanych//"+fileName);
         Desktop desktop = Desktop.getDesktop();
         if(file.exists()) try {
             desktop.open(file);
-
+                
         } catch (IOException ex) {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
         }
             }
         }
         //wyświetlamy wynik
-                Frame frame = new Frame();
-                 switch (whatToDo) {
+        if(showResults==true)
+        {       Frame frame = new Frame();
+             switch (whatToDo) {
                 case 0:
                     JOptionPane.showMessageDialog(frame, avg/=counter, "Średnia wartość",JOptionPane.PLAIN_MESSAGE);
                     break;
@@ -565,6 +576,7 @@ void openJSON(String filename, int comboBoxChoice, int whatToDo ,Date dateStart 
                     JOptionPane.showMessageDialog(frame, max, "Maksymalna wartość",JOptionPane.PLAIN_MESSAGE);
                     break;
             }    
+        }
     min=99999.99;
     max=-9999.99;
     avg=0.0;
