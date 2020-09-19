@@ -165,7 +165,7 @@ public class Find extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-  void openCSVandTXT(String filename, int comboBoxChoice, int whatToDo ,Date dateStart , Date DateEnd) {
+    void openCSVandTXT(String filename, int comboBoxChoice, int whatToDo ,Date dateStart , Date DateEnd) {
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader("jezioroDanych//" + filename));
@@ -264,7 +264,7 @@ public class Find extends javax.swing.JFrame {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
         }  
     }
-  void openXML(String filename, int comboBoxChoice, int whatToDo ,Date dateStart , Date DateEnd) throws ParserConfigurationException, SAXException, ParseException, IOException {
+    void openXML(String filename, int comboBoxChoice, int whatToDo ,Date dateStart , Date DateEnd) throws ParserConfigurationException, SAXException, ParseException, IOException {
        
       showResults=false;  
       
@@ -341,12 +341,12 @@ public class Find extends javax.swing.JFrame {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
         }  
 }
-void openJSON(String filename, int comboBoxChoice, int whatToDo ,Date dateStart , Date DateEnd) throws ParserConfigurationException, SAXException, ParseException, IOException {
+    void openJSON(String filename, int comboBoxChoice, int whatToDo ,Date dateStart , Date DateEnd) throws ParserConfigurationException, SAXException, ParseException, IOException {
           JSONParser jsonParser = new JSONParser();
         String parameters[] = {"PredkoscDzwieku","TemperaturaZamierzonaDzwiekiem",
             "CisnienieAtmosferyczne","Temperatura","Wilgotnosc","WskazanieKompasu","PrędkoscU-V","PrędkoscWiatru",
             "KierunekWiatru","Wysokosc","TemperaturaWewnatrzPomieszczenia"};
-        
+           showResults=false;  
         try (FileReader reader = new FileReader("jezioroDanych//" + filename))
         {
             DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
@@ -376,6 +376,7 @@ void openJSON(String filename, int comboBoxChoice, int whatToDo ,Date dateStart 
                            counter++;
                }
                     }
+                       showResults=true;
                     break;
              
         case 1:
@@ -400,7 +401,7 @@ void openJSON(String filename, int comboBoxChoice, int whatToDo ,Date dateStart 
                }
                     }
                }
-                    
+                      showResults=true;
              break;
               case 2:
                      for ( int i =0; i<dataList.size();i++){
@@ -424,14 +425,17 @@ void openJSON(String filename, int comboBoxChoice, int whatToDo ,Date dateStart 
                }
                     }
                }
-                    
+                      showResults=true;
              break;
              }
-          
+         
         } catch (FileNotFoundException ex) {
                    showWarning();
-        } catch (IOException | ParseException | org.json.simple.parser.ParseException ex) {
+        } catch (IOException | ParseException ex) {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        catch ( org.json.simple.parser.ParseException ex) {
+                   showResults=false;
         }
 }
     private void jDateChooser1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jDateChooser1PropertyChange
@@ -533,9 +537,7 @@ void openJSON(String filename, int comboBoxChoice, int whatToDo ,Date dateStart 
 
             } catch (FileNotFoundException ex) {
                 showWarning();
-            } catch (IOException ex) {
-                Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ParseException ex) {
+            } catch (IOException | ParseException ex) {
                 Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
             }
         

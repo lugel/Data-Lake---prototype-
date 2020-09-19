@@ -6,4 +6,5 @@ Nowy dokument tekstowy — kopia — kopia (3) txt 01-09-2020 01-09-2020 Pol
 Nowy dokument tekstowy — kopia (4) txt 13-09-2020 27-09-2020 Koziegłów
 Nowy dokument tekstowy — kopia (4) txt 06-09-2020 12-09-2020 Koziegłów
 Nowy dokument tekstowy — kopia — kopia — kopia (3) txt 19-09-2020 27-09-2020 Polkk
-docos — kopia xml 01-08-2020 31-08-2020 Poznań
+docos — kopia xml 13-08-2020 31-08-2020 Poznań
+csvjson — kopia json 01-08-2020 12-08-2020 Poznań
