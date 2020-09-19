@@ -19,7 +19,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -31,7 +30,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 /**
  *
  * @author Wojtek
@@ -162,7 +163,7 @@ public class Find extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    void openCSVandTXT(String filename, int comboBoxChoice, int whatToDo ,Date dateStart , Date DateEnd) {
+  void openCSVandTXT(String filename, int comboBoxChoice, int whatToDo ,Date dateStart , Date DateEnd) {
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader("jezioroDanych//" + filename));
@@ -220,8 +221,6 @@ public class Find extends javax.swing.JFrame {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
         }  
     }
-    
-    
   void openXML(String filename, int comboBoxChoice, int whatToDo ,Date dateStart , Date DateEnd) throws ParserConfigurationException, SAXException, ParseException, IOException {
         
         String parameters[] = {"PredkoscDzwieku","TemperaturaZamierzonaDzwiekiem",
@@ -292,8 +291,99 @@ public class Find extends javax.swing.JFrame {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
         }  
 }
-  
-  
+void openJSON(String filename, int comboBoxChoice, int whatToDo ,Date dateStart , Date DateEnd) throws ParserConfigurationException, SAXException, ParseException, IOException {
+          JSONParser jsonParser = new JSONParser();
+        String parameters[] = {"PredkoscDzwieku","TemperaturaZamierzonaDzwiekiem",
+            "CisnienieAtmosferyczne","Temperatura","Wilgotnosc","WskazanieKompasu","PrędkoscU-V","PrędkoscWiatru",
+            "KierunekWiatru","Wysokosc","TemperaturaWewnatrzPomieszczenia"};
+        
+        try (FileReader reader = new FileReader("jezioroDanych//" + filename))
+        {
+            DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+            Object obj = jsonParser.parse(reader);
+ 
+            JSONArray dataList = (JSONArray) obj;
+
+             switch (whatToDo) {
+                case 0:
+                     for ( int i =0; i<dataList.size();i++){
+           JSONObject employeeObject =  ((JSONObject) dataList.get(i));
+            String dateStirng = (String) employeeObject.get("Data");    
+             Date date =  format.parse(dateStirng);
+             
+              if (date.before(dateStart) ||  date.after(DateEnd))
+                      continue;  
+               Object obja =   employeeObject.get(parameters[comboBoxChoice]);    
+               if(obja.getClass().getName()=="java.lang.Double")
+               {
+                    avg+= (double) employeeObject.get(parameters[comboBoxChoice]); 
+                           counter++;
+               }
+               else if (obja.getClass().getName()=="java.lang.Long"){
+                   Long l = (long) employeeObject.get(parameters[comboBoxChoice]);
+                    double d = l.doubleValue();
+                    avg+=d;
+                           counter++;
+               }
+                    }
+                    break;
+             
+        case 1:
+             for ( int i =0; i<dataList.size();i++){
+            JSONObject employeeObject =  ((JSONObject) dataList.get(i));
+            String dateStirng = (String) employeeObject.get("Data");    
+             Date date =  format.parse(dateStirng);
+              if (date.before(dateStart) ||  date.after(DateEnd))
+                      continue;  
+               Object obja =   employeeObject.get(parameters[comboBoxChoice]);    
+               if(obja.getClass().getName()=="java.lang.Double" )
+               {
+                       if ((Double)employeeObject.get(parameters[comboBoxChoice]) < min) {
+                            min = (Double)employeeObject.get(parameters[comboBoxChoice]);
+               }
+               }
+               else if (obja.getClass().getName()=="java.lang.Long"){
+                   Long l = (long) employeeObject.get(parameters[comboBoxChoice]);
+                    double d = l.doubleValue();
+                       if (d < min) {
+                            min = d;
+               }
+                    }
+               }
+                    
+             break;
+              case 2:
+                     for ( int i =0; i<dataList.size();i++){
+            JSONObject employeeObject =  ((JSONObject) dataList.get(i));
+            String dateStirng = (String) employeeObject.get("Data");    
+             Date date =  format.parse(dateStirng);
+               if (date.before(dateStart) ||  date.after(DateEnd))
+                      continue;  
+                     Object obja =   employeeObject.get(parameters[comboBoxChoice]);    
+               if(obja.getClass().getName()=="java.lang.Double" )
+               {
+                       if ((Double)employeeObject.get(parameters[comboBoxChoice])>  max) {
+                            max = (Double)employeeObject.get(parameters[comboBoxChoice]);
+               }
+               }
+               else if (obja.getClass().getName()=="java.lang.Long"){
+                   Long l = (long) employeeObject.get(parameters[comboBoxChoice]);
+                    double d = l.doubleValue();
+                       if (d > max) {
+                            max = d;
+               }
+                    }
+               }
+                    
+             break;
+             }
+          
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException | ParseException | org.json.simple.parser.ParseException ex) {
+            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+        }
+}
     private void jDateChooser1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jDateChooser1PropertyChange
         // TODO add your handling code here:
         if ("date".equals(evt.getPropertyName())) {
@@ -415,21 +505,19 @@ public class Find extends javax.swing.JFrame {
                 Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
             }
           
-            String fileName = line.substring(0, line.indexOf(type)-1);
+            String fileName = line.substring(0, line.lastIndexOf(type)-1);
             fileName += "." + type;
-            
+                      System.out.println(fileName);
+            System.out.println(comboBoxChoice);
+            System.out.println(whatToDo);
+             System.out.println(dateStartSearch);
+            System.out.println(dateEndSearch);
             //jakich dat szuakmy w danym pliku
             
             if(dateStartSearch.before(dateStartEntered ))
             dateStartSearch=dateStartEntered;
              if(dateEndSearch.after(dateEndEntered ))
             dateEndSearch=dateEndEntered;
-            
-            System.out.println(fileName);
-            System.out.println(comboBoxChoice);
-            System.out.println(whatToDo);
-             System.out.println(dateStartSearch);
-            System.out.println(dateEndSearch);
             
             if (type.equals("csv")) {
                 openCSVandTXT(fileName, comboBoxChoice, whatToDo,dateStartSearch, dateEndSearch);        
@@ -441,8 +529,18 @@ public class Find extends javax.swing.JFrame {
                   } catch (ParserConfigurationException | SAXException | ParseException | IOException ex) {
                       Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
                   }
-            } else if (type.equals("bmp")) {
-                
+            } else if (type.equals("json")) {
+                  try {     
+                      openJSON(fileName, comboBoxChoice, whatToDo,dateStartSearch, dateEndSearch);
+                  } catch (ParserConfigurationException ex) {
+                      Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+                  } catch (SAXException ex) {
+                      Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+                  } catch (ParseException ex) {
+                      Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+                  } catch (IOException ex) {
+                      Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+                  }
             } else {
                    File file = new File("jezioroDanych//"+fileName);
         Desktop desktop = Desktop.getDesktop();
@@ -474,8 +572,7 @@ public class Find extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
 
-  public static void blockDateInput()
-  {
+  public static void blockDateInput(){
       JTextFieldDateEditor editor = (JTextFieldDateEditor) jDateChooser1.getDateEditor();
             editor.setEditable(false);
       editor = (JTextFieldDateEditor) jDateChooser2.getDateEditor();
