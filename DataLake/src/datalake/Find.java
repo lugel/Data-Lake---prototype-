@@ -195,8 +195,9 @@ public class Find extends javax.swing.JFrame {
                         }
                         avg+= Double.parseDouble(data[comboBoxChoice+2].trim());
                         counter++;   
+                          showResults=true;
                     }
-                    showResults=true;
+                  
                     break;
                 case 1:
                     while ((line = reader.readLine()) != null) {
@@ -219,9 +220,10 @@ public class Find extends javax.swing.JFrame {
                         }
                         if (Double.parseDouble(data[comboBoxChoice+2]) < min) {
                             min = Double.parseDouble(data[comboBoxChoice+2]);
+                               showResults=true;
                         }
                     }
-                    showResults=true;
+                 
                      break;
                       
                 case 2:
@@ -246,9 +248,9 @@ public class Find extends javax.swing.JFrame {
                         }
                         if (Double.parseDouble(data[comboBoxChoice+2]) > max) {
                             max = Double.parseDouble(data[comboBoxChoice+2]);
+                               showResults=true;
                         }
                     }
-                     showResults=true;
                      break;
             }                
             reader.close();
@@ -638,7 +640,7 @@ public class Find extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_jButton1ActionPerformed
-void showWarning()
+    void showWarning()
 {
     showResults=false;
       Frame frame = new Frame();

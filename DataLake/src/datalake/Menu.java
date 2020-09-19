@@ -87,8 +87,7 @@ public class Menu extends javax.swing.JFrame {
         // TODO add your handling code here:
       
            String userDir = System.getProperty("user.home");
-            fileChooser.setCurrentDirectory(new File(userDir +"/Desktop")); 
- 
+           fileChooser.setCurrentDirectory(new File(userDir +"/Desktop")); 
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();

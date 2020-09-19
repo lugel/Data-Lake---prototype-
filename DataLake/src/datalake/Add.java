@@ -263,7 +263,7 @@ if (result == JOptionPane.YES_OPTION){
           changeDateinMetaFile(rowNumber,dateEndUser,dateStartUser);
 
     reader = new BufferedReader(new FileReader("jezioroDanych//meta.txt"));
-    for(int i=0;i<rowNumber;i++)
+    for(int i=1;i<rowNumber;i++)
         reader.readLine();
     
  }
