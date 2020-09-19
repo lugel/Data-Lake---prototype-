@@ -214,7 +214,7 @@ public class Find extends javax.swing.JFrame {
             reader.close();
        
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+                     showWarning();
         } catch (IOException ex) {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParseException ex) {
@@ -286,7 +286,7 @@ public class Find extends javax.swing.JFrame {
             }                
          
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+                  showWarning();
         } catch (IOException | ParseException ex) {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
         }  
@@ -379,7 +379,7 @@ void openJSON(String filename, int comboBoxChoice, int whatToDo ,Date dateStart 
              }
           
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+                   showWarning();
         } catch (IOException | ParseException | org.json.simple.parser.ParseException ex) {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -476,7 +476,7 @@ void openJSON(String filename, int comboBoxChoice, int whatToDo ,Date dateStart 
 //            }
 
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+                     showWarning();
         } catch (IOException ex) {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParseException ex) {
@@ -556,9 +556,11 @@ void openJSON(String filename, int comboBoxChoice, int whatToDo ,Date dateStart 
                 showResults=false;
                    File file = new File("jezioroDanych//"+fileName);
         Desktop desktop = Desktop.getDesktop();
-        if(file.exists()) try {
+    try {
+             if(file.exists())
             desktop.open(file);
-                
+                else
+                showWarning();
         } catch (IOException ex) {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -596,7 +598,11 @@ void openJSON(String filename, int comboBoxChoice, int whatToDo ,Date dateStart 
                        "Komunikat",JOptionPane.ERROR_MESSAGE);   
         }
     }//GEN-LAST:event_jButton1ActionPerformed
-
+void showWarning()
+{
+      Frame frame = new Frame();
+               JOptionPane.showMessageDialog(frame, "Nie znaleziono pliku w jeziorze.", "Komunikat",JOptionPane.WARNING_MESSAGE);
+}
 
   public static void blockDateInput(){
       JTextFieldDateEditor editor = (JTextFieldDateEditor) jDateChooser1.getDateEditor();

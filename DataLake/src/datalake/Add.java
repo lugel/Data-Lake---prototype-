@@ -163,7 +163,7 @@ public class Add extends javax.swing.JFrame {
             
             if(duplicateData == true)
             { 
-                Files.move(source, dest);
+              
                 DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
                String dateToFileStart = dF.format(newFile.dateStart);
                String dateToFileEnd = dF.format(newFile.dateEnd);
@@ -173,7 +173,9 @@ public class Add extends javax.swing.JFrame {
            
               output.close();
               
-              
+                Frame frame = new Frame();
+               JOptionPane.showMessageDialog(frame, "Dodano plik do jeziora.",
+                       "Komunikat",JOptionPane.WARNING_MESSAGE);
               
             }
         } catch (FileNotFoundException ex ) {
@@ -245,7 +247,7 @@ public class Add extends javax.swing.JFrame {
                    }
 if (result == JOptionPane.YES_OPTION){
     //edycja
-   
+     Files.move(source, dest);
     if((dateStartUser.before(dateStart) || dateStartUser.equals(dateStart))  
             && (dateEndUser.after(dateEnd) || dateEndUser.equals(dateEnd))) //usunąć linijkę 
         deleteLine(rowNumber);
