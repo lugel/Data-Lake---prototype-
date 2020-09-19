@@ -207,7 +207,7 @@ public class Find extends javax.swing.JFrame {
                            continue;
                                      int count=0;
                 for(int i = 0; i < line.length(); i++) {    
-                 if(line.charAt(i) != ';')    
+                 if(line.charAt(i) == ';')    
                        count++;    
                  }    
                 if(count!=12) { 
@@ -233,7 +233,7 @@ public class Find extends javax.swing.JFrame {
                            continue;
                                      int count=0;
                 for(int i = 0; i < line.length(); i++) {    
-                 if(line.charAt(i) != ';')    
+                 if(line.charAt(i) == ';')    
                        count++;    
                  }    
                 if(count!=12){

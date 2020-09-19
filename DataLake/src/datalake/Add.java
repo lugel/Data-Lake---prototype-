@@ -178,9 +178,15 @@ public class Add extends javax.swing.JFrame {
                        "Komunikat",JOptionPane.WARNING_MESSAGE);
               
             }
+          
+                   
+        } catch ( java.lang.ArrayIndexOutOfBoundsException ex ) {
+             Frame frame = new Frame();
+               JOptionPane.showMessageDialog(frame, "Błąd w odczycie meta.txt.",
+                       "Komunikat",JOptionPane.ERROR_MESSAGE);   
         } catch (FileNotFoundException ex ) {
              Frame frame = new Frame();
-               JOptionPane.showMessageDialog(frame, "Nie znaleziono pliku.",
+               JOptionPane.showMessageDialog(frame, "Nie znaleziono pliku meta.txt w jeziorze.",
                        "Komunikat",JOptionPane.ERROR_MESSAGE);   
         } catch (IOException ex) {
             Frame frame = new Frame();
@@ -254,12 +260,12 @@ if (result == JOptionPane.YES_OPTION){
             && (dateEndUser.after(dateStart) || dateEndUser.equals(dateStart))) 
       //zmienić początek istniejącego o jeden dzień od zakończeania nowego 
         changeStartDateinMetaFile(rowNumber,dateEndUser);
-   else if((dateStartUser.before(dateEnd) || dateStartUser.equals(dateEnd))
+   else  if((dateStartUser.before(dateEnd) || dateStartUser.equals(dateEnd))
             && (dateEndUser.after(dateEnd) || dateEndUser.equals(dateEnd))) 
 //zmieniamy koniec istniejącego o jeden dzień do ropzoczecia nowego 
           changeEndDateinMetaFile(rowNumber,dateStartUser);
 
-     else if(dateStartUser.after(dateStart) && dateEndUser.before(dateEnd) ) //zmieniamy koniec istniejącego o jeden dzień do ropzoczecia nowego 
+ else   if(dateStartUser.after(dateStart) && dateEndUser.before(dateEnd) ) //zmieniamy koniec istniejącego o jeden dzień do ropzoczecia nowego 
           changeDateinMetaFile(rowNumber,dateEndUser,dateStartUser);
 
     reader = new BufferedReader(new FileReader("jezioroDanych//meta.txt"));
@@ -272,7 +278,7 @@ else
 
                 }
             
-            rowNumber++;
+         //   rowNumber++;
               }
               reader.close();
               return  true;
