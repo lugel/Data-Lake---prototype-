@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.concurrent.TimeUnit;
 import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -396,176 +397,182 @@ void openJSON(String filename, int comboBoxChoice, int whatToDo ,Date dateStart 
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-          if(jDateChooser2.getDate()!=null && jDateChooser1.getDate()!=null)
+          
+        if(jDateChooser2.getDate()!=null && jDateChooser1.getDate()!=null)
         if(jTextField3.getText().length()>0) {
-      Boolean showResults=true;
-        Date dateStartEntered = null;
+            
+            //TEST
+            long startTime = System.nanoTime();
+            //TEST
+            
+            Boolean showResults=true;
+            Date dateStartEntered = null;
             Date dateEndEntered =  null; 
         
-        ArrayList<String> viableLines = new ArrayList<String>();
-                     ArrayList <Date> dateRangeCheck = new ArrayList<Date>();
-             ArrayList <Date> dateRangeFile = new ArrayList<Date>();
-        int comboBoxChoice = 0;
-        int whatToDo = 0;
-        String[] data = null;
-         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        try {
-             dateStartEntered = jDateChooser1.getDate();
-            Date dateStartFile;
-            dateEndEntered =  sdf.parse(sdf.format(jDateChooser2.getDate())); 
-            Date dateEndFile;
+            ArrayList<String> viableLines = new ArrayList<String>();
+            ArrayList <Date> dateRangeCheck = new ArrayList<Date>();
+            ArrayList <Date> dateRangeFile = new ArrayList<Date>();
+            int comboBoxChoice = 0;
+            int whatToDo = 0;
+            String[] data = null;
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+         
+            try {
+                    dateStartEntered = jDateChooser1.getDate();
+                    Date dateStartFile;
+                    dateEndEntered =  sdf.parse(sdf.format(jDateChooser2.getDate())); 
+                    Date dateEndFile;
            
-            String locationEntered = jTextField3.getText();
-             if(locationEntered.length()==0) //błędna lokalizacja
-           {
-               Frame frame = new Frame();
-               JOptionPane.showMessageDialog(frame, "Błędna lokalizacja.", "Komunikat",JOptionPane.WARNING_MESSAGE);
-               return;
-           }
-            String locationFile;
+                    String locationEntered = jTextField3.getText();
+                    if(locationEntered.length()==0) //błędna lokalizacja
+                    {
+                        Frame frame = new Frame();
+                        JOptionPane.showMessageDialog(frame, "Błędna lokalizacja.", "Komunikat",JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                String locationFile;
             
-            comboBoxChoice = jComboBox1.getSelectedIndex();
-            whatToDo = jComboBox2.getSelectedIndex();
+                comboBoxChoice = jComboBox1.getSelectedIndex();
+                whatToDo = jComboBox2.getSelectedIndex();
             
-            DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
+                DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
             
-            BufferedReader reader;
-            reader = new BufferedReader(new FileReader("jezioroDanych//meta.txt"));
-            String line;
-             Calendar c = Calendar.getInstance();
-            c.setTime(dateStartEntered);
+                BufferedReader reader;
+                reader = new BufferedReader(new FileReader("jezioroDanych//meta.txt"));
+                String line;
+                Calendar c = Calendar.getInstance();
+                c.setTime(dateStartEntered);
 
-            while(!(c.getTime().after(dateEndEntered))){
-                dateRangeCheck.add(c.getTime());
-                  c.add(Calendar.DAY_OF_MONTH, 1); 
-            };
+                while(!(c.getTime().after(dateEndEntered))){
+                    dateRangeCheck.add(c.getTime());
+                    c.add(Calendar.DAY_OF_MONTH, 1); 
+                };
 
-           while ((line = reader.readLine()) != null) {
-              data = line.split(" ");
-                int numberSpace = line.split(" ").length; //liczenie spacji w lini
-            dateStartFile = dF.parse(data[numberSpace-3]); //uwzględniamy to że są spacje w nazwie pliku
-                dateEndFile = dF.parse(data[numberSpace-2]);
-                locationFile = data[numberSpace-1];    
+                while ((line = reader.readLine()) != null) {
+                    data = line.split(" ");
+                    int numberSpace = line.split(" ").length; //liczenie spacji w lini
+                    dateStartFile = dF.parse(data[numberSpace-3]); //uwzględniamy to że są spacje w nazwie pliku
+                    dateEndFile = dF.parse(data[numberSpace-2]);
+                    locationFile = data[numberSpace-1];    
 
-             if  ( locationEntered.equals(locationFile)) {   
-                 c.setTime(dateStartFile);
-              while(!(c.getTime().after( dateEndFile))){
-                dateRangeFile.add(c.getTime());
-                  c.add(Calendar.DAY_OF_MONTH, 1); 
-              }
-                int dateRageFileSizeBeforeDelete = dateRangeCheck.size();
-              for (int i=0; i< dateRangeFile.size();i++)
-                    for(int j=0;j<dateRangeCheck.size();j++)
-              {
-                  if(dateRangeCheck.get(j).equals(dateRangeFile.get(i)))
-                  dateRangeCheck.remove(j); //czyścimy dni które są w meta.txt
-              } 
-              //jak plik zawiera jakiś dzień to dodajemy go do listy 
-              if(dateRageFileSizeBeforeDelete != dateRangeCheck.size())
-               viableLines.add(line);
-            }
-                dateRangeFile.clear();
-           
-           }
+                    if  ( locationEntered.equals(locationFile)) {   
+                        c.setTime(dateStartFile);
+                        while(!(c.getTime().after( dateEndFile))){
+                            dateRangeFile.add(c.getTime());
+                            c.add(Calendar.DAY_OF_MONTH, 1); 
+                        }
+                        int dateRageFileSizeBeforeDelete = dateRangeCheck.size();
+                        for (int i=0; i< dateRangeFile.size();i++)
+                            for(int j=0;j<dateRangeCheck.size();j++)
+                            {
+                                if(dateRangeCheck.get(j).equals(dateRangeFile.get(i)))
+                                    dateRangeCheck.remove(j); //czyścimy dni które są w meta.txt
+                            } 
+                        //jak plik zawiera jakiś dzień to dodajemy go do listy 
+                    if(dateRageFileSizeBeforeDelete != dateRangeCheck.size())
+                        viableLines.add(line);
+                    }
+                    dateRangeFile.clear();
+                }
 
-            System.out.println(viableLines);
+                System.out.println(viableLines);
 //            if (viableLines.isEmpty()) {
 //                Frame frame = new Frame();
 //                JOptionPane.showMessageDialog(frame, "Brak danych dla podanego miejsca\nw danym okresie czasu.",
 //                       "Komunikat",JOptionPane.WARNING_MESSAGE);
 //            }
 
-        } catch (FileNotFoundException ex) {
-                     showWarning();
-        } catch (IOException ex) {
-            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParseException ex) {
-            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            } catch (FileNotFoundException ex) {
+                showWarning();
+            } catch (IOException ex) {
+                Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ParseException ex) {
+                Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+            }
         
-        if(dateRangeCheck.isEmpty()!=true) //jesli nie zostało wyczyszczone nie wykonujemy wyszukania 
-           {
+            if(dateRangeCheck.isEmpty()!=true) //jesli nie zostało wyczyszczone nie wykonujemy wyszukania 
+            {
                possibleSearch=false;
                Frame frame = new Frame();
                JOptionPane.showMessageDialog(frame, "Brak danych dla\npodanego zakresu dat.",
                        "Komunikat",JOptionPane.WARNING_MESSAGE);
                return;
-           }
-        for (String line : viableLines) {
-            
-              Date dateStartSearch=null; //uwzględniamy to że są spacje w nazwie pliku
-             Date  dateEndSearch=null;
-            
-            data = line.split(" ");
-            int numberSpace = line.split(" ").length; //liczenie spacji w lini
-               DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
-            String type = data[numberSpace-4];
-            try {
-              dateStartSearch = dF.parse(data[numberSpace-3]); //uwzględniamy to że są spacje w nazwie pliku
-             dateEndSearch = dF.parse(data[numberSpace-2]);
-            } catch (ParseException ex) {
-                Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
             }
-          
-
+            for (String line : viableLines) {
             
-            //uwzględnienie pliku bez rozszerzenia
-            String fileName = line.substring(0, line.lastIndexOf(type)-1);
-              if( !type.equals(""))
-           fileName += "." + type;
-          else
-          fileName=fileName.substring(0, line.lastIndexOf(dF.format(dateStartSearch))-2);
+                Date dateStartSearch=null; //uwzględniamy to że są spacje w nazwie pliku
+                Date  dateEndSearch=null;
+            
+                data = line.split(" ");
+                int numberSpace = line.split(" ").length; //liczenie spacji w lini
+                DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
+                String type = data[numberSpace-4];
+                try {
+                    dateStartSearch = dF.parse(data[numberSpace-3]); //uwzględniamy to że są spacje w nazwie pliku
+                    dateEndSearch = dF.parse(data[numberSpace-2]);
+                } catch (ParseException ex) {
+                    Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                //uwzględnienie pliku bez rozszerzenia
+                String fileName = line.substring(0, line.lastIndexOf(type)-1);
+                if( !type.equals(""))
+                    fileName += "." + type;
+                else
+                    fileName=fileName.substring(0, line.lastIndexOf(dF.format(dateStartSearch))-2);
             
             
           //  fileName += "." + type;
-                      System.out.println(fileName);
-            System.out.println(comboBoxChoice);
-            System.out.println(whatToDo);
-             System.out.println(dateStartSearch);
-            System.out.println(dateEndSearch);
+                System.out.println(fileName);
+                System.out.println(comboBoxChoice);
+                System.out.println(whatToDo);
+                System.out.println(dateStartSearch);
+                System.out.println(dateEndSearch);
             //jakich dat szuakmy w danym pliku
             
-            if(dateStartSearch.before(dateStartEntered ))
-            dateStartSearch=dateStartEntered;
-             if(dateEndSearch.after(dateEndEntered ))
-            dateEndSearch=dateEndEntered;
+                if(dateStartSearch.before(dateStartEntered ))
+                    dateStartSearch=dateStartEntered;
+                if(dateEndSearch.after(dateEndEntered ))
+                    dateEndSearch=dateEndEntered;
             
-            if (type.equals("csv")) {
-                openCSVandTXT(fileName, comboBoxChoice, whatToDo,dateStartSearch, dateEndSearch);        
-            } else if (type.equals("txt")) {
-                 openCSVandTXT(fileName, comboBoxChoice, whatToDo,dateStartSearch, dateEndSearch);     
-            } else if (type.equals("xml")) {
-                  try {     
-                      openXML(fileName, comboBoxChoice, whatToDo,dateStartSearch, dateEndSearch);
-                  } catch (ParserConfigurationException | SAXException | ParseException | IOException ex) {
-                      Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-                  }
-            } else if (type.equals("json")) {
-                  try {     
-                      openJSON(fileName, comboBoxChoice, whatToDo,dateStartSearch, dateEndSearch);
-                  } catch (ParserConfigurationException ex) {
-                      Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-                  } catch (SAXException ex) {
-                      Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-                  } catch (ParseException ex) {
-                      Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-                  } catch (IOException ex) {
-                      Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-                  }
-            } else {
-                showResults=false;
-                   File file = new File("jezioroDanych//"+fileName);
-        Desktop desktop = Desktop.getDesktop();
-    try {
-             if(file.exists())
-            desktop.open(file);
-                else
-                showWarning();
-        } catch (IOException ex) {
-            Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
-        }
+                if (type.equals("csv")) {
+                    openCSVandTXT(fileName, comboBoxChoice, whatToDo,dateStartSearch, dateEndSearch);        
+                } else if (type.equals("txt")) {
+                    openCSVandTXT(fileName, comboBoxChoice, whatToDo,dateStartSearch, dateEndSearch);     
+                } else if (type.equals("xml")) {
+                    try {     
+                        openXML(fileName, comboBoxChoice, whatToDo,dateStartSearch, dateEndSearch);
+                    } catch (ParserConfigurationException | SAXException | ParseException | IOException ex) {
+                        Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else if (type.equals("json")) {
+                    try {     
+                        openJSON(fileName, comboBoxChoice, whatToDo,dateStartSearch, dateEndSearch);
+                    } catch (ParserConfigurationException ex) {
+                        Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (SAXException ex) {
+                        Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (ParseException ex) {
+                        Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    showResults=false;
+                    File file = new File("jezioroDanych//"+fileName);
+                    Desktop desktop = Desktop.getDesktop();
+        
+                    try {
+                        if(file.exists())
+                            desktop.open(file);
+                        else
+                            showWarning();
+                    } catch (IOException ex) {
+                        Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
-        }
+            long endTime = System.nanoTime();
+            System.out.println("Czas wykonania: "+ (endTime-startTime)/1000000 + " ms");
         //wyświetlamy wynik
         if(showResults==true)
         {       Frame frame = new Frame();
@@ -581,6 +588,7 @@ void openJSON(String filename, int comboBoxChoice, int whatToDo ,Date dateStart 
                     break;
             }    
         }
+        
     min=99999.99;
     max=-9999.99;
     avg=0.0;
@@ -597,6 +605,7 @@ void openJSON(String filename, int comboBoxChoice, int whatToDo ,Date dateStart 
                JOptionPane.showMessageDialog(frame, "Brak wyboru daty.",
                        "Komunikat",JOptionPane.ERROR_MESSAGE);   
         }
+
     }//GEN-LAST:event_jButton1ActionPerformed
 void showWarning()
 {
