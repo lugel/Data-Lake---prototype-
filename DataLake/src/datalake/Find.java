@@ -21,7 +21,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.concurrent.TimeUnit;
 import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -37,20 +36,18 @@ import org.json.simple.parser.JSONParser;
 import org.xml.sax.SAXParseException;
 /**
  *
- * @author Wojtek
+ * @author Wojtek Król and Mariusz Drynda BDIS 
  */
 public class Find extends javax.swing.JFrame {
 
    double min=99999.99;
-    double max=-9999.99;
+   double max=-9999.99;
    double avg=0.0;
    int counter=0;
    Boolean showResults=true;
-    Boolean  possibleSearch;
     public Find() {
         initComponents();
         blockDateInput();
-        possibleSearch=true;
         
     }
 
@@ -179,16 +176,16 @@ public class Find extends javax.swing.JFrame {
                 case 0:
                     while ((line = reader.readLine()) != null) {
                         
-                       if(line.isEmpty()) //pozwalamy na spację 
+                       if(line.isEmpty())  //skip empty line 
                            continue;
                         int count=0;
                 for(int i = 0; i < line.length(); i++) {    
-                 if(line.charAt(i) == ';')    
+                 if(line.charAt(i) == ';')     //check csv and txt format
                        count++;    
-                 }    
+                }    
                 if(count!=12){
-               showResults = false;
-               return;
+                showResults = false;
+                return;
                 }
                        
                              data = line.split(";");
@@ -207,7 +204,7 @@ public class Find extends javax.swing.JFrame {
                            continue;
                                      int count=0;
                 for(int i = 0; i < line.length(); i++) {    
-                 if(line.charAt(i) == ';')    
+                 if(line.charAt(i) == ';')    //check csv and txt format
                        count++;    
                  }    
                 if(count!=12) { 
@@ -233,7 +230,7 @@ public class Find extends javax.swing.JFrame {
                            continue;
                                      int count=0;
                 for(int i = 0; i < line.length(); i++) {    
-                 if(line.charAt(i) == ';')    
+                 if(line.charAt(i) == ';')    //check csv and txt format
                        count++;    
                  }    
                 if(count!=12){
@@ -364,8 +361,7 @@ public class Find extends javax.swing.JFrame {
               if (date.before(dateStart) ||  date.after(DateEnd))
                       continue;  
                Object obja =   employeeObject.get(parameters[comboBoxChoice]);    
-               if(obja.getClass().getName()=="java.lang.Double")
-               {
+               if(obja.getClass().getName()=="java.lang.Double") {
                     avg+= (double) employeeObject.get(parameters[comboBoxChoice]); 
                            counter++;
                }
@@ -387,8 +383,7 @@ public class Find extends javax.swing.JFrame {
               if (date.before(dateStart) ||  date.after(DateEnd))
                       continue;  
                Object obja =   employeeObject.get(parameters[comboBoxChoice]);    
-               if(obja.getClass().getName()=="java.lang.Double" )
-               {
+               if(obja.getClass().getName()=="java.lang.Double" ){
                        if ((Double)employeeObject.get(parameters[comboBoxChoice]) < min) {
                             min = (Double)employeeObject.get(parameters[comboBoxChoice]);
                }
@@ -411,8 +406,7 @@ public class Find extends javax.swing.JFrame {
                if (date.before(dateStart) ||  date.after(DateEnd))
                       continue;  
                      Object obja =   employeeObject.get(parameters[comboBoxChoice]);    
-               if(obja.getClass().getName()=="java.lang.Double" )
-               {
+               if(obja.getClass().getName()=="java.lang.Double" ){
                        if ((Double)employeeObject.get(parameters[comboBoxChoice])>  max) {
                             max = (Double)employeeObject.get(parameters[comboBoxChoice]);
                }
@@ -477,10 +471,9 @@ public class Find extends javax.swing.JFrame {
                     Date dateEndFile;
            
                     String locationEntered = jTextField3.getText();
-                    if(locationEntered.length()==0) //błędna lokalizacja
-                    {
+                    if(locationEntered.length()==0)  {
                         Frame frame = new Frame();
-                        JOptionPane.showMessageDialog(frame, "Błędna lokalizacja.", "Komunikat",JOptionPane.WARNING_MESSAGE);
+                        JOptionPane.showMessageDialog(frame, "Bad lcalization.", "The message",JOptionPane.WARNING_MESSAGE);
                         return;
                     }
                 String locationFile;
@@ -496,6 +489,7 @@ public class Find extends javax.swing.JFrame {
                 Calendar c = Calendar.getInstance();
                 c.setTime(dateStartEntered);
 
+                //get date which user need calculate  calendar array which have every day
                 while(!(c.getTime().after(dateEndEntered))){
                     dateRangeCheck.add(c.getTime());
                     c.add(Calendar.DAY_OF_MONTH, 1); 
@@ -503,37 +497,28 @@ public class Find extends javax.swing.JFrame {
 
                 while ((line = reader.readLine()) != null) {
                     data = line.split(" ");
-                    int numberSpace = line.split(" ").length; //liczenie spacji w lini
-                    dateStartFile = dF.parse(data[numberSpace-3]); //uwzględniamy to że są spacje w nazwie pliku
+                    int numberSpace = line.split(" ").length; 
+                    dateStartFile = dF.parse(data[numberSpace-3]); 
                     dateEndFile = dF.parse(data[numberSpace-2]);
                     locationFile = data[numberSpace-1];    
 
                     if  ( locationEntered.equals(locationFile)) {   
                         c.setTime(dateStartFile);
                         while(!(c.getTime().after( dateEndFile))){
-                            dateRangeFile.add(c.getTime());
+                            dateRangeFile.add(c.getTime()); //get days from meta.txt 
                             c.add(Calendar.DAY_OF_MONTH, 1); 
                         }
                         int dateRageFileSizeBeforeDelete = dateRangeCheck.size();
                         for (int i=0; i< dateRangeFile.size();i++)
-                            for(int j=0;j<dateRangeCheck.size();j++)
-                            {
+                            for(int j=0;j<dateRangeCheck.size();j++) {
                                 if(dateRangeCheck.get(j).equals(dateRangeFile.get(i)))
-                                    dateRangeCheck.remove(j); //czyścimy dni które są w meta.txt
+                                    dateRangeCheck.remove(j); //clean date range who need calculate
                             } 
-                        //jak plik zawiera jakiś dzień to dodajemy go do listy 
                     if(dateRageFileSizeBeforeDelete != dateRangeCheck.size())
-                        viableLines.add(line);
+                        viableLines.add(line); //if we reduced the size, we add the file to open
                     }
                     dateRangeFile.clear();
                 }
-
-                System.out.println(viableLines);
-//            if (viableLines.isEmpty()) {
-//                Frame frame = new Frame();
-//                JOptionPane.showMessageDialog(frame, "Brak danych dla podanego miejsca\nw danym okresie czasu.",
-//                       "Komunikat",JOptionPane.WARNING_MESSAGE);
-//            }
 
             } catch (FileNotFoundException ex) {
                 showWarning();
@@ -541,45 +526,35 @@ public class Find extends javax.swing.JFrame {
                 Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
             }
         
-            if(dateRangeCheck.isEmpty()!=true) //jesli nie zostało wyczyszczone nie wykonujemy wyszukania 
-            {
-               possibleSearch=false;
+            if(dateRangeCheck.isEmpty()!=true) {//if array is empty  we do not make calculations
                Frame frame = new Frame();
-               JOptionPane.showMessageDialog(frame, "Brak danych dla\npodanego zakresu dat.",
-                       "Komunikat",JOptionPane.WARNING_MESSAGE);
+               JOptionPane.showMessageDialog(frame, "No data for\nthe given date range.",
+                       "The message",JOptionPane.WARNING_MESSAGE);
                return;
             }
             for (String line : viableLines) {
             
-                Date dateStartSearch=null; //uwzględniamy to że są spacje w nazwie pliku
+                Date dateStartSearch=null; 
                 Date  dateEndSearch=null;
             
                 data = line.split(" ");
-                int numberSpace = line.split(" ").length; //liczenie spacji w lini
+                int numberSpace = line.split(" ").length; 
                 DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
                 String type = data[numberSpace-4];
                 try {
-                    dateStartSearch = dF.parse(data[numberSpace-3]); //uwzględniamy to że są spacje w nazwie pliku
+                    dateStartSearch = dF.parse(data[numberSpace-3]);  
                     dateEndSearch = dF.parse(data[numberSpace-2]);
                 } catch (ParseException ex) {
                     Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                //uwzględnienie pliku bez rozszerzenia
+                //check file without extension
                 String fileName = line.substring(0, line.lastIndexOf(type)-1);
                 if( !type.equals(""))
                     fileName += "." + type;
                 else
                     fileName=fileName.substring(0, line.lastIndexOf(dF.format(dateStartSearch))-2);
             
-            
-          //  fileName += "." + type;
-                System.out.println(fileName);
-                System.out.println(comboBoxChoice);
-                System.out.println(whatToDo);
-                System.out.println(dateStartSearch);
-                System.out.println(dateEndSearch);
-            //jakich dat szuakmy w danym pliku
-            
+            //decrease of the searched range
                 if(dateStartSearch.before(dateStartEntered ))
                     dateStartSearch=dateStartEntered;
                 if(dateEndSearch.after(dateEndEntered ))
@@ -624,25 +599,24 @@ public class Find extends javax.swing.JFrame {
             }
             long endTime = System.nanoTime();
             System.out.println("Czas wykonania: "+ (endTime-startTime)/1000000 + " ms");
-        //wyświetlamy wynik
         if(showResults==true)
         {       Frame frame = new Frame();
              switch (whatToDo) {
                 case 0:
-                    JOptionPane.showMessageDialog(frame, avg/=counter, "Średnia wartość",JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, avg/=counter, "Average value",JOptionPane.PLAIN_MESSAGE);
                     break;
                 case 1:
-                    JOptionPane.showMessageDialog(frame, min, "Minimalna wartość",JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, min, "Min value",JOptionPane.PLAIN_MESSAGE);
                     break;  
                 case 2:
-                    JOptionPane.showMessageDialog(frame, max, "Maksymalna wartość",JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, max, "Max value",JOptionPane.PLAIN_MESSAGE);
                     break;
             }    
         }
         else
         {
              Frame frame = new Frame();
-               JOptionPane.showMessageDialog(frame, "Błędny format danych.", "Komunikat",JOptionPane.ERROR_MESSAGE);
+               JOptionPane.showMessageDialog(frame, "Bad data format.", "The message",JOptionPane.ERROR_MESSAGE);
         }
             
         
@@ -653,14 +627,14 @@ public class Find extends javax.swing.JFrame {
       }
         else{
              Frame frame = new Frame();
-               JOptionPane.showMessageDialog(frame, "Za krótka nazwa lokalizacji.",
-                       "Komunikat",JOptionPane.ERROR_MESSAGE);   
+               JOptionPane.showMessageDialog(frame, "Location name too short.",
+                       "The message",JOptionPane.ERROR_MESSAGE);   
         }
         else
         {
             Frame frame = new Frame();
-               JOptionPane.showMessageDialog(frame, "Brak wyboru daty.",
-                       "Komunikat",JOptionPane.ERROR_MESSAGE);   
+               JOptionPane.showMessageDialog(frame, " No date selection.",
+                       "The message",JOptionPane.ERROR_MESSAGE);   
         }
 
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -668,7 +642,7 @@ void showWarning()
 {
     showResults=false;
       Frame frame = new Frame();
-               JOptionPane.showMessageDialog(frame, "Nie znaleziono pliku w jeziorze.", "Komunikat",JOptionPane.WARNING_MESSAGE);
+               JOptionPane.showMessageDialog(frame, "File not found in lake.", "The message",JOptionPane.WARNING_MESSAGE);
 }
 
   public static void blockDateInput(){
@@ -689,8 +663,6 @@ void showWarning()
          */
 
             try {
-            
-                
                 for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                     if ("Nimbus".equals(info.getName())) {
                         javax.swing.UIManager.setLookAndFeel(info.getClassName());
@@ -708,14 +680,11 @@ void showWarning()
             }
             //</editor-fold>
 
-            /* Create and display the form */
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
                     new Find().setVisible(true);
                 }
             });
-    
-        
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

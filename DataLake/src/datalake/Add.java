@@ -29,13 +29,15 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author Wojtek
+ * @author Wojtek Król and Mariusz Drynda BDIS 
  */
 public class Add extends javax.swing.JFrame {
 
     /**
      * Creates new form Add
-     * @param fN
+     * @param fN - name of file 
+     * @param fileSource - source of file which is to be added
+     * @param destination - place (data lake) which which is to be added
      */
     public Add(String fN,Path fileSource,Path destination) {
         initComponents();
@@ -142,76 +144,73 @@ public class Add extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+
         if(jDateChooser2.getDate()!=null && jDateChooser1.getDate()!=null)
-        if(jTextField5.getText().length()>0) {//isnieje miasto Y i A 
-        try {
-          
+        if(jTextField5.getText().length()>0) {//isnieją miasta Y i A 
+        try { 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                 
+        
+        //checking if a given file has the extension
         newFile.name = fileName.split("\\.")[0];
       if( !fileName.contains("."))
              newFile.type="";
       else
-        newFile.type = fileName.split("\\.")[1];
+            newFile.type = fileName.split("\\.")[1];
 
             newFile.dateStart = jDateChooser1.getDate();
-            newFile.dateEnd =   sdf.parse(sdf.format(jDateChooser2.getDate())); //pobierało godzinę nie wiem czemu
+            newFile.dateEnd =   sdf.parse(sdf.format(jDateChooser2.getDate())); 
             newFile.localization = jTextField5.getText();
             
-           duplicateData= checkDoubleInfo(newFile.dateStart,newFile.dateEnd,newFile.localization);
+            //checking if there is already a file in the lake containing data for set the date and location
+            duplicateData= checkDoubleInfo(newFile.dateStart,newFile.dateEnd,newFile.localization);
             
-            if(duplicateData == true)
-            { 
-                   Files.move(source, dest);
+            if(duplicateData == true){ //true means permission to transfer the file to the lake
+                Files.move(source, dest);
                 DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
-               String dateToFileStart = dF.format(newFile.dateStart);
-               String dateToFileEnd = dF.format(newFile.dateEnd);
-                  Writer output;
+                String dateToFileStart = dF.format(newFile.dateStart);
+                String dateToFileEnd = dF.format(newFile.dateEnd);
+                Writer output;
             output = new BufferedWriter(new FileWriter("jezioroDanych//meta.txt", true));
             output.write(newFile.name + " " + newFile.type + " " + dateToFileStart + " " + dateToFileEnd + " " + newFile.localization + "\n");
-           
-              output.close();
+            output.close();
               
-                Frame frame = new Frame();
-               JOptionPane.showMessageDialog(frame, "Dodano plik do jeziora.",
-                       "Komunikat",JOptionPane.WARNING_MESSAGE);
-              
+               Frame frame = new Frame();
+               JOptionPane.showMessageDialog(frame, "File added to the lake.","The message",JOptionPane.WARNING_MESSAGE);
             }
           
                    
         } catch ( java.lang.ArrayIndexOutOfBoundsException ex ) {
              Frame frame = new Frame();
-               JOptionPane.showMessageDialog(frame, "Błąd w odczycie meta.txt.",
-                       "Komunikat",JOptionPane.ERROR_MESSAGE);   
+               JOptionPane.showMessageDialog(frame, "Error in reading meta.txt",
+                       "The message",JOptionPane.ERROR_MESSAGE);   
         } catch (FileNotFoundException ex ) {
              Frame frame = new Frame();
-               JOptionPane.showMessageDialog(frame, "Nie znaleziono pliku meta.txt w jeziorze.",
-                       "Komunikat",JOptionPane.ERROR_MESSAGE);   
+               JOptionPane.showMessageDialog(frame, "The meta.txt file was not found in the lake.",
+                       "The message",JOptionPane.ERROR_MESSAGE);   
         } catch (IOException ex) {
             Frame frame = new Frame();
-               JOptionPane.showMessageDialog(frame, "Problem z przeniesieniem pliku.",
-                       "Komunikat",JOptionPane.ERROR_MESSAGE);   
+               JOptionPane.showMessageDialog(frame, "Problem with moving the file.",
+                       "The message",JOptionPane.ERROR_MESSAGE);   
         } catch (ParseException ex) {
             Logger.getLogger(Add.class.getName()).log(Level.SEVERE, null, ex);
         }
         }
         else{
              Frame frame = new Frame();
-               JOptionPane.showMessageDialog(frame, "Za krótka nazwa lokalizacji.",
-                       "Komunikat",JOptionPane.ERROR_MESSAGE);   
+               JOptionPane.showMessageDialog(frame, "Location name too short..",
+                       "The message",JOptionPane.ERROR_MESSAGE);   
         }
         else
         {
             Frame frame = new Frame();
-               JOptionPane.showMessageDialog(frame, "Brak wyboru daty.",
-                       "Komunikat",JOptionPane.ERROR_MESSAGE);   
+               JOptionPane.showMessageDialog(frame, "No date selection.",
+                       "The message",JOptionPane.ERROR_MESSAGE);   
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jDateChooser1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jDateChooser1PropertyChange
         // TODO add your handling code here:
-        //reset końca zakresu 
+        //change of the end of the range when changing the beginning of the range
              if ("date".equals(evt.getPropertyName())) {
                      jDateChooser2.setEnabled(true);
              if(jDateChooser2.getDate()!=null && jDateChooser1.getDate().after(jDateChooser2.getDate())) 
@@ -227,45 +226,40 @@ public class Add extends javax.swing.JFrame {
         int rowNumber=1;
               BufferedReader reader;
               DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
-                String[] data = null;
+              String[] data = null;
               reader = new BufferedReader(new FileReader("jezioroDanych//meta.txt"));
               String line;
               while ((line = reader.readLine()) != null) {
                 data = line.split(" ");
-                int numberSpace = line.split(" ").length; //liczenie spacji w lini
-                //czytanie danych
+                int numberSpace = line.split(" ").length; 
                 
-            dateStart = dF.parse(data[numberSpace-3]); //uwzględniamy to że są spacje w nazwie pliku
-             dateEnd = dF.parse(data[numberSpace-2]);
+            dateStart = dF.parse(data[numberSpace-3]); 
+            dateEnd = dF.parse(data[numberSpace-2]);
             localization = data[numberSpace-1];
+            //if the day ranges overlap the user can overwrite the range that is in the lake
             if( localization == null ? localizationUser == null : localization.equals(localizationUser))   
                 if(!(dateEndUser.before(dateStart) || dateStartUser.after(dateEnd))){
                     
                     reader.close();
             
-                   if(result!=0) //pobieramy tylko raz zgode na zapis
-                   { 
-            Object[] msg = {"Istnieją już dane dla podanej lokalizacji "+localization+" "
-                    + "z taką\nsamą datą jakie mają zostać wprowadzone.","Czy chcesz nadpisać dane dla istniejących dat?"};
-        Frame frame = new Frame();
+                   if(result!=0) {//the user only decides once
+            Object[] msg = {"Data already exists for the given location - "+localization+" "
+                    + "with the\nsame date to be entered.","Do you want to overwrite data for existing dates?"};
+            Frame frame = new Frame();
             result = JOptionPane.showConfirmDialog(
-    frame,msg, "Ostrzeżenie",JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+    frame,msg, "The message",JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
                    }
 if (result == JOptionPane.YES_OPTION){
-    //edycja
     if((dateStartUser.before(dateStart) || dateStartUser.equals(dateStart))  
-            && (dateEndUser.after(dateEnd) || dateEndUser.equals(dateEnd))) //usunąć linijkę 
+            && (dateEndUser.after(dateEnd) || dateEndUser.equals(dateEnd))) 
         deleteLine(rowNumber);
    else if((dateStartUser.before(dateStart) || dateStartUser.equals(dateStart) )
             && (dateEndUser.after(dateStart) || dateEndUser.equals(dateStart))) 
-      //zmienić początek istniejącego o jeden dzień od zakończeania nowego 
         changeStartDateinMetaFile(rowNumber,dateEndUser);
    else  if((dateStartUser.before(dateEnd) || dateStartUser.equals(dateEnd))
             && (dateEndUser.after(dateEnd) || dateEndUser.equals(dateEnd))) 
-//zmieniamy koniec istniejącego o jeden dzień do ropzoczecia nowego 
           changeEndDateinMetaFile(rowNumber,dateStartUser);
-
- else   if(dateStartUser.after(dateStart) && dateEndUser.before(dateEnd) ) //zmieniamy koniec istniejącego o jeden dzień do ropzoczecia nowego 
+   else   if(dateStartUser.after(dateStart) && dateEndUser.before(dateEnd) ) 
           changeDateinMetaFile(rowNumber,dateEndUser,dateStartUser);
 
     reader = new BufferedReader(new FileReader("jezioroDanych//meta.txt"));
@@ -277,13 +271,11 @@ else
     return false;
 
                 }
-            
-         //   rowNumber++;
               }
               reader.close();
               return  true;
-    }                                                       //od usera te daty
-    //ustawienie gdy zakrres nowy wchodzi w zakres obecny np (2.10-3.10)-> (1.10-4.10) 
+    }                                                     
+    //setting when the new range falls within the current range, e.g. (2.10-3.10)-> (1.10-4.10) 
      public static void changeDateinMetaFile(int rowNumber, Date endDateNew , Date startDateNew) throws IOException {
         
         Calendar c = Calendar.getInstance();
@@ -297,7 +289,7 @@ else
         
         DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
                String dateEndToFile = dF.format(startDateNew);
-                String dateStartToFile = dF.format(endDateNew);
+               String dateStartToFile = dF.format(endDateNew);
 
        String tempFile = "jezioroDanych//metaCopy.txt";
        String originalFile = "jezioroDanych//meta.txt";
@@ -307,8 +299,7 @@ else
        
         String currentLine;
         String dataReader[];
-        
-         String dataCopyReader[];
+        String dataCopyReader[];
 
         try (FileWriter fw = new FileWriter(tempFile,true)) {
             BufferedWriter bw = new BufferedWriter(fw);
@@ -319,10 +310,8 @@ else
             
             int rowNumberNew =1;
             
-            while((currentLine = br.readLine()) !=null)
-            {
-                if(rowNumberNew == rowNumber)
-                {
+            while((currentLine = br.readLine()) !=null){
+                if(rowNumberNew == rowNumber){
                     dataReader = currentLine.split(" ");
                     dataCopyReader = currentLine.split(" ");
                     
@@ -330,17 +319,14 @@ else
 
                 dataReader[numberSpace-3]=dateStartToFile;
                 dataCopyReader[numberSpace-2]=dateEndToFile;
-                // pw.print("\n");
-                for(int i=0 ;i<numberSpace;i++)
-                {  
+                for(int i=0 ;i<numberSpace;i++){  
                     pw.print(dataReader[i]);
                     if((i+1)!=numberSpace)
                 pw.print(" ");
                 }
                 pw.print("\n");
                 
-                 for(int i=0 ;i<numberSpace;i++)
-                {  
+                 for(int i=0 ;i<numberSpace;i++) {  
                     pw.print(dataCopyReader[i]);
                     if((i+1)!=numberSpace)
                 pw.print(" ");
@@ -366,19 +352,16 @@ else
         
     }
     
-     // sytuacja gdy nowy (2.10-4.10)-> obecny: (3.10-6.10)
+     // situation when new range: (2.10-4.10)-> old: (3.10-6.10)
      public static void changeStartDateinMetaFile(int rowNumber, Date endDateNew) throws IOException{
         
-        //dateEndUser o 1 dzień do przodu
         Calendar c = Calendar.getInstance();
         c.setTime(endDateNew);
         
         c.add(Calendar.DAY_OF_MONTH, 1); 
-        
         endDateNew= c.getTime();
-        
         DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
-               String dateToFile = dF.format(endDateNew);
+       String dateToFile = dF.format(endDateNew);
 
        String tempFile = "jezioroDanych//metaCopy.txt";
        String originalFile = "jezioroDanych//meta.txt";
@@ -398,17 +381,13 @@ else
             
             int rowNumberNew =1;
             
-            while((currentLine = br.readLine()) !=null)
-            {
-                if(rowNumberNew == rowNumber)
-                {
+            while((currentLine = br.readLine()) !=null) {
+                if(rowNumberNew == rowNumber){
                     dataReader = currentLine.split(" ");
                 int numberSpace = currentLine.split(" ").length;
 
                 dataReader[numberSpace-3]=dateToFile;
-                // pw.print("\n");
-                for(int i=0 ;i<numberSpace;i++)
-                {  
+                for(int i=0 ;i<numberSpace;i++) {  
                     pw.print(dataReader[i]);
                     if((i+1)!=numberSpace)
                 pw.print(" ");
@@ -432,15 +411,13 @@ else
         
         
     }
-       // sytuacja gdy nowy (2.10-4.10)-> obecny: (1.10-3.10)
+       // situation when new range: (2.10-4.10)-> old: (1.10-3.10)
       public static void changeEndDateinMetaFile(int rowNumber, Date startDateNew) throws IOException{
         
-        //dateStartUser o 1 dzień do tyłu
         Calendar c = Calendar.getInstance();
         c.setTime(startDateNew);
         
         c.add(Calendar.DAY_OF_MONTH, -1); 
-        
         startDateNew= c.getTime();
         
         DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
@@ -464,18 +441,15 @@ else
             
             int rowNumberNew =1;
             
-            while((currentLine = br.readLine()) !=null)
-            {
-                if(rowNumberNew == rowNumber)
-                {
-                    dataReader = currentLine.split(" ");
+            while((currentLine = br.readLine()) !=null) {
+                if(rowNumberNew == rowNumber){
+                dataReader = currentLine.split(" ");
                 int numberSpace = currentLine.split(" ").length;
 
                 dataReader[numberSpace-2]=dateToFile;
                 
                  
-                for(int i=0 ;i<numberSpace;i++)
-                {  
+                for(int i=0 ;i<numberSpace;i++){  
                     pw.print(dataReader[i]);
                     if((i+1)!=numberSpace)
                 pw.print(" ");
@@ -500,12 +474,8 @@ else
         
     }
 
-    /**
-     * @param args the command line arguments
-     * @throws java.io.IOException
-     */
-         // sytuacja gdy nowy (2.10-7.10)-> obecny: (3.10-4.10) 
-      //uwzględniamy też : (2.10-7.10)-> obecny: (3.10-7.10)
+         // situation when new range: (2.10-7.10)-> old: (3.10-4.10) 
+      // situation when new range: (2.10-7.10)-> old: (3.10-7.10)
     public static void deleteLine(int rowNumber) throws IOException{
        String tempFile = "jezioroDanych//metaCopy.txt";
        String originalFile = "jezioroDanych//meta.txt";
@@ -513,7 +483,6 @@ else
        File oldFile = new File(originalFile);
        File newFile = new File(tempFile);
         String currentLine;
-       // String dataRead[];
         try (FileWriter fw = new FileWriter(tempFile,true)) {
             BufferedWriter bw = new BufferedWriter(fw);
             PrintWriter pw = new PrintWriter(bw);
@@ -523,14 +492,9 @@ else
             
             int rowNumberNew =1;
             
-            while((currentLine = br.readLine()) !=null)
-            {
-                //można w for zrobić
+            while((currentLine = br.readLine()) !=null) {
                 if(rowNumberNew != rowNumber)
-                {
                     pw.println(currentLine);
-                    
-                }
                 rowNumberNew++;
             }
             pw.flush();
@@ -544,9 +508,9 @@ else
        File dump = new File(originalFile);
        newFile.renameTo(dump);
         
-        
     }
-  public static void   blockDateInput() {
+    //block text input from date chooser
+    public static void   blockDateInput() {
       JTextFieldDateEditor editor = (JTextFieldDateEditor) jDateChooser1.getDateEditor();
             editor.setEditable(false);
       editor = (JTextFieldDateEditor) jDateChooser2.getDateEditor();
@@ -571,7 +535,6 @@ else
         }
         //</editor-fold>
         
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {

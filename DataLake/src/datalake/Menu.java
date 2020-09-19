@@ -5,16 +5,16 @@
  */
 package datalake;
 
+import java.awt.Frame;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /**
  *
- * @author Wojtek
+ * @author Wojtek Król and Mariusz Drynda BDIS 
  */
 public class Menu extends javax.swing.JFrame {
 
@@ -85,10 +85,9 @@ public class Menu extends javax.swing.JFrame {
 
     private void AddButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AddButtonMouseClicked
         // TODO add your handling code here:
-       
-        
+      
            String userDir = System.getProperty("user.home");
-            fileChooser.setCurrentDirectory(new File(userDir +"/Desktop")); //p
+            fileChooser.setCurrentDirectory(new File(userDir +"/Desktop")); 
  
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -98,7 +97,9 @@ public class Menu extends javax.swing.JFrame {
           
             new Add(file.getName(),source,dest).setVisible(true);
         } else {
-            System.out.println("File access cancelled by user.");
+             Frame frame = new Frame();
+               JOptionPane.showMessageDialog(frame, "File access cancelled by user.",
+                       "The message",JOptionPane.ERROR_MESSAGE);   
         }
     }//GEN-LAST:event_AddButtonMouseClicked
 
@@ -139,11 +140,8 @@ public class Menu extends javax.swing.JFrame {
             public void run() {
                 new Menu().setVisible(true);
             }
-        });
-             
+        });    
     }
-    
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AddButton;
     private javax.swing.JButton FindButton;

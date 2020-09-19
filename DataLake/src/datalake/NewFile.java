@@ -8,13 +8,12 @@ package datalake;
 import java.util.Date;
 /**
  *
- * @author Wojtek
+ * @author Wojtek Król and Mariusz Drynda BDIS 
  */
 public class NewFile {
     String name;
     String type;
     Date dateStart;
-     Date dateEnd;
+    Date dateEnd;
     String localization;
-    
 }
