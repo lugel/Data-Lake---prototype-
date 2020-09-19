@@ -44,7 +44,7 @@ public class Find extends javax.swing.JFrame {
     double max=-9999.99;
    double avg=0.0;
    int counter=0;
-   
+   Boolean showResults=true;
     Boolean  possibleSearch;
     public Find() {
         initComponents();
@@ -173,11 +173,24 @@ public class Find extends javax.swing.JFrame {
             String line;
             reader.readLine();
             reader.readLine();        
-         
+            showResults=false;
             switch (whatToDo) {
                 case 0:
                     while ((line = reader.readLine()) != null) {
-                        data = line.split(";");
+                        
+                       if(line.isEmpty()) //pozwalamy na spację 
+                           continue;
+                        int count=0;
+                for(int i = 0; i < line.length(); i++) {    
+                 if(line.charAt(i) == ';')    
+                       count++;    
+                 }    
+                if(count!=12){
+               showResults = false;
+               return;
+                }
+                       showResults=true;
+                             data = line.split(";");
                         if ((data[comboBoxChoice+2].isEmpty()) || ((format.parse(data[0])).before(dateStart) ||
                             (format.parse(data[0])).after(DateEnd))) {
                             continue;
@@ -188,6 +201,18 @@ public class Find extends javax.swing.JFrame {
                     break;
                 case 1:
                     while ((line = reader.readLine()) != null) {
+                               if(line.isEmpty())
+                           continue;
+                                     int count=0;
+                for(int i = 0; i < line.length(); i++) {    
+                 if(line.charAt(i) != ';')    
+                       count++;    
+                 }    
+                if(count!=12) { 
+               showResults = false;
+               return;
+                } 
+                showResults=true;
                         data = line.split(";");
                         if ((data[comboBoxChoice+2].isEmpty()) || ((format.parse(data[0])).before(dateStart) ||
                             (format.parse(data[0])).after(DateEnd))) {
@@ -200,6 +225,18 @@ public class Find extends javax.swing.JFrame {
                      break;
                 case 2:
                     while ((line = reader.readLine()) != null) {
+                               if(line.isEmpty())
+                           continue;
+                                     int count=0;
+                for(int i = 0; i < line.length(); i++) {    
+                 if(line.charAt(i) != ';')    
+                       count++;    
+                 }    
+                if(count!=12){
+               showResults = false;
+               return;
+                }
+                 showResults=true;
                         data = line.split(";");
                 
                         if ((data[comboBoxChoice+2].isEmpty()) || ((format.parse(data[0])).before(dateStart) ||
@@ -405,7 +442,7 @@ void openJSON(String filename, int comboBoxChoice, int whatToDo ,Date dateStart 
             long startTime = System.nanoTime();
             //TEST
             
-            Boolean showResults=true;
+            
             Date dateStartEntered = null;
             Date dateEndEntered =  null; 
         
@@ -588,6 +625,12 @@ void openJSON(String filename, int comboBoxChoice, int whatToDo ,Date dateStart 
                     break;
             }    
         }
+        else
+        {
+             Frame frame = new Frame();
+               JOptionPane.showMessageDialog(frame, "Błędny format danych.", "Komunikat",JOptionPane.ERROR_MESSAGE);
+        }
+            
         
     min=99999.99;
     max=-9999.99;
@@ -609,6 +652,7 @@ void openJSON(String filename, int comboBoxChoice, int whatToDo ,Date dateStart 
     }//GEN-LAST:event_jButton1ActionPerformed
 void showWarning()
 {
+    showResults=false;
       Frame frame = new Frame();
                JOptionPane.showMessageDialog(frame, "Nie znaleziono pliku w jeziorze.", "Komunikat",JOptionPane.WARNING_MESSAGE);
 }

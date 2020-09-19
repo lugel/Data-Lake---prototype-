@@ -15,4 +15,4 @@ Nowy dokument tekstowy — kopia — kopia (3) — kopia txt 06-09-2020 13-09-20
 Nowy dokument tekstowy — kopia — kopia — kopia (2) txt 01-09-2020 30-09-2020 Poland
 Nowy dokument tekstowy — kopia — kopia — kopia txt 06-09-2020 13-09-2020 asdasda
 Nowy dokument tekstowy — kopia (2) txt 06-09-2020 26-09-2020 Jacek
-data08-2020 csv 01-08-2020 31-08-2020 Poznań
+ csv 01-08-2020 31-08-2020 Poznań
