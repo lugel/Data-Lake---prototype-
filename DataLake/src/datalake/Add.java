@@ -150,10 +150,10 @@ public class Add extends javax.swing.JFrame {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
                  
         newFile.name = fileName.split("\\.")[0];
-      if( fileName.indexOf("\\.")!=-1)
-            newFile.type = fileName.split("\\.")[1];
+      if( !fileName.contains("."))
+             newFile.type="";
       else
-          newFile.type="";
+        newFile.type = fileName.split("\\.")[1];
 
             newFile.dateStart = jDateChooser1.getDate();
             newFile.dateEnd =   sdf.parse(sdf.format(jDateChooser2.getDate())); //pobierało godzinę nie wiem czemu
@@ -163,7 +163,7 @@ public class Add extends javax.swing.JFrame {
             
             if(duplicateData == true)
             { 
-              
+                   Files.move(source, dest);
                 DateFormat dF = new SimpleDateFormat("dd-MM-yyyy");
                String dateToFileStart = dF.format(newFile.dateStart);
                String dateToFileEnd = dF.format(newFile.dateEnd);
@@ -247,7 +247,6 @@ public class Add extends javax.swing.JFrame {
                    }
 if (result == JOptionPane.YES_OPTION){
     //edycja
-     Files.move(source, dest);
     if((dateStartUser.before(dateStart) || dateStartUser.equals(dateStart))  
             && (dateEndUser.after(dateEnd) || dateEndUser.equals(dateEnd))) //usunąć linijkę 
         deleteLine(rowNumber);
