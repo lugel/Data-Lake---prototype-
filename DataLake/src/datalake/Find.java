@@ -34,6 +34,7 @@ import org.xml.sax.SAXException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.xml.sax.SAXParseException;
 /**
  *
  * @author Wojtek
@@ -189,7 +190,7 @@ public class Find extends javax.swing.JFrame {
                showResults = false;
                return;
                 }
-                       showResults=true;
+                       
                              data = line.split(";");
                         if ((data[comboBoxChoice+2].isEmpty()) || ((format.parse(data[0])).before(dateStart) ||
                             (format.parse(data[0])).after(DateEnd))) {
@@ -198,6 +199,7 @@ public class Find extends javax.swing.JFrame {
                         avg+= Double.parseDouble(data[comboBoxChoice+2].trim());
                         counter++;   
                     }
+                    showResults=true;
                     break;
                 case 1:
                     while ((line = reader.readLine()) != null) {
@@ -212,7 +214,7 @@ public class Find extends javax.swing.JFrame {
                showResults = false;
                return;
                 } 
-                showResults=true;
+               
                         data = line.split(";");
                         if ((data[comboBoxChoice+2].isEmpty()) || ((format.parse(data[0])).before(dateStart) ||
                             (format.parse(data[0])).after(DateEnd))) {
@@ -222,7 +224,9 @@ public class Find extends javax.swing.JFrame {
                             min = Double.parseDouble(data[comboBoxChoice+2]);
                         }
                     }
+                    showResults=true;
                      break;
+                      
                 case 2:
                     while ((line = reader.readLine()) != null) {
                                if(line.isEmpty())
@@ -236,7 +240,7 @@ public class Find extends javax.swing.JFrame {
                showResults = false;
                return;
                 }
-                 showResults=true;
+              
                         data = line.split(";");
                 
                         if ((data[comboBoxChoice+2].isEmpty()) || ((format.parse(data[0])).before(dateStart) ||
@@ -247,6 +251,7 @@ public class Find extends javax.swing.JFrame {
                             max = Double.parseDouble(data[comboBoxChoice+2]);
                         }
                     }
+                     showResults=true;
                      break;
             }                
             reader.close();
@@ -260,7 +265,9 @@ public class Find extends javax.swing.JFrame {
         }  
     }
   void openXML(String filename, int comboBoxChoice, int whatToDo ,Date dateStart , Date DateEnd) throws ParserConfigurationException, SAXException, ParseException, IOException {
-        
+       
+      showResults=false;  
+      
         String parameters[] = {"PredkoscDzwieku","TemperaturaZamierzonaDzwiekiem",
             "CisnienieAtmosferyczne","Temperatura","Wilgotnosc","WskazanieKompasu","PrędkoscU-V","PrędkoscWiatru",
             "KierunekWiatru","Wysokosc","TemperaturaWewnatrzPomieszczenia"};
@@ -289,6 +296,7 @@ public class Find extends javax.swing.JFrame {
                         counter++;   
                     }
             }
+                        showResults=true;
                     break;
                 case 1:
                        for (int itr = 0; itr < nodeList.getLength(); itr++)    {  
@@ -305,6 +313,7 @@ public class Find extends javax.swing.JFrame {
                         }
                     }
                     }
+                        showResults=true;
                      break;
                 case 2:
                       for (int itr = 0; itr < nodeList.getLength(); itr++)   {  
@@ -320,11 +329,14 @@ public class Find extends javax.swing.JFrame {
                         }
                     }
             }
+                       showResults=true;
                      break;
             }                
          
         } catch (FileNotFoundException ex) {
                   showWarning();
+        }      catch (SAXParseException ex) {
+                  showResults=false;
         } catch (IOException | ParseException ex) {
             Logger.getLogger(Find.class.getName()).log(Level.SEVERE, null, ex);
         }  
