@@ -396,6 +396,8 @@ void openJSON(String filename, int comboBoxChoice, int whatToDo ,Date dateStart 
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+          if(jDateChooser2.getDate()!=null && jDateChooser1.getDate()!=null)
+        if(jTextField3.getText().length()>0) {
       Boolean showResults=true;
         Date dateStartEntered = null;
             Date dateEndEntered =  null; 
@@ -581,6 +583,18 @@ void openJSON(String filename, int comboBoxChoice, int whatToDo ,Date dateStart 
     max=-9999.99;
     avg=0.0;
     counter=0;
+      }
+        else{
+             Frame frame = new Frame();
+               JOptionPane.showMessageDialog(frame, "Za krótka nazwa lokalizacji.",
+                       "Komunikat",JOptionPane.ERROR_MESSAGE);   
+        }
+        else
+        {
+            Frame frame = new Frame();
+               JOptionPane.showMessageDialog(frame, "Brak wyboru daty.",
+                       "Komunikat",JOptionPane.ERROR_MESSAGE);   
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
 
